@@ -1,0 +1,200 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  
+  --font-heading: var(--font-heading);
+  --font-body: var(--font-body);
+  --font-sans: var(--font-body);
+  
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  /* Apple Design System - Pro Monochrome */
+  --background: #FFFFFF; /* Pure White */
+  --foreground: #1D1D1F; /* Apple Black */
+  
+  --card: #F5F5F7; /* Apple Gray for Cards */
+  --card-foreground: #1D1D1F;
+  
+  --popover: #FFFFFF;
+  --popover-foreground: #1D1D1F;
+  
+  --primary: #1D1D1F; /* Apple Black for Buttons */
+  --primary-foreground: #FFFFFF;
+  
+  --secondary: #F5F5F7; /* Apple Gray for Sections */
+  --secondary-foreground: #1D1D1F;
+  
+  --muted: #F5F5F7;
+  --muted-foreground: #86868B; /* Apple Secondary Text */
+  
+  --accent: #F5F5F7;
+  --accent-foreground: #1D1D1F;
+  
+  --destructive: #FF3B30; /* Apple Red */
+  --destructive-foreground: #FFFFFF;
+  
+  --border: #D2D2D7;
+  --input: #D2D2D7;
+  --ring: #86868B; /* Neutral Ring */
+  
+  --radius: 1.5rem;
+  
+  /* Apple Charts */
+  --chart-1: #0071E3; /* Keep Blue for data only */
+  --chart-2: #34C759;
+  --chart-3: #AF52DE;
+  --chart-4: #FF2D55;
+  --chart-5: #FF9500;
+
+  --sidebar: var(--background);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--accent-foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+}
+
+.dark {
+  /* Apple Design System - Dark Mode */
+  --background: #000000;
+  --foreground: #F5F5F7;
+  
+  --card: #1D1D1F;
+  --card-foreground: #F5F5F7;
+  
+  --popover: #1D1D1F;
+  --popover-foreground: #F5F5F7;
+  
+  --primary: #FFFFFF; /* White for Buttons in Dark Mode */
+  --primary-foreground: #000000;
+  
+  --secondary: #1D1D1F;
+  --secondary-foreground: #F5F5F7;
+  
+  --muted: #1D1D1F;
+  --muted-foreground: #86868B;
+  
+  --accent: #1D1D1F;
+  --accent-foreground: #F5F5F7;
+  
+  --destructive: #FF453A;
+  --destructive-foreground: #FFFFFF;
+  
+  --border: #424245;
+  --input: #424245;
+  --ring: #86868B;
+  
+  --chart-1: #0A84FF;
+  --chart-2: #30D158;
+  --chart-3: #BF5AF2;
+  --chart-4: #FF375F;
+  --chart-5: #FF9F0A;
+
+  --sidebar: var(--background);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--accent-foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+}
+
+body {
+  /* Use System Fonts stack - San Francisco */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: inherit;
+  font-weight: 600;
+  letter-spacing: -0.02em; /* Tight tracking for headings */
+}
+
+/* Ensure all clickable elements have pointer cursor */
+button, [role="button"] {
+  cursor: pointer;
+}
+
+@layer utilities {
+  .font-heading {
+    font-family: inherit;
+  }
+
+  .font-body {
+    font-family: inherit;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .container {
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  /* Apple Style Utilities */
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+  
+  .dark .glass-panel {
+    background: rgba(29, 29, 31, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .hero-glow {
+    box-shadow: 0 0 100px 40px rgba(0, 0, 0, 0.05);
+  }
+}
