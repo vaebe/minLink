@@ -41,6 +41,8 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+
+  --color-orange-apple: #FF9500;
   
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -49,43 +51,43 @@
 }
 
 :root {
-  /* Apple Design System - Pro Monochrome */
+  /* Apple Design System - Pro Monochrome & Orange */
   --background: #FFFFFF; /* Pure White */
-  --foreground: #1D1D1F; /* Apple Black */
+  --foreground: #000000; /* Pure Black */
   
   --card: #F5F5F7; /* Apple Gray for Cards */
-  --card-foreground: #1D1D1F;
+  --card-foreground: #000000;
   
   --popover: #FFFFFF;
-  --popover-foreground: #1D1D1F;
+  --popover-foreground: #000000;
   
-  --primary: #1D1D1F; /* Apple Black for Buttons */
+  --primary: #000000; /* Pure Black for Buttons */
   --primary-foreground: #FFFFFF;
   
   --secondary: #F5F5F7; /* Apple Gray for Sections */
-  --secondary-foreground: #1D1D1F;
+  --secondary-foreground: #000000;
   
   --muted: #F5F5F7;
   --muted-foreground: #86868B; /* Apple Secondary Text */
   
   --accent: #F5F5F7;
-  --accent-foreground: #1D1D1F;
+  --accent-foreground: #000000;
   
   --destructive: #FF3B30; /* Apple Red */
   --destructive-foreground: #FFFFFF;
   
   --border: #D2D2D7;
   --input: #D2D2D7;
-  --ring: #86868B; /* Neutral Ring */
+  --ring: #FF9500; /* Orange Ring */
   
   --radius: 1.5rem;
   
-  /* Apple Charts */
-  --chart-1: #0071E3; /* Keep Blue for data only */
-  --chart-2: #34C759;
-  --chart-3: #AF52DE;
-  --chart-4: #FF2D55;
-  --chart-5: #FF9500;
+  /* Apple Charts - Vibrant & Modern */
+  --chart-1: #FF9500; /* Orange (Brand) */
+  --chart-2: #007AFF; /* Blue */
+  --chart-3: #34C759; /* Green */
+  --chart-4: #AF52DE; /* Purple */
+  --chart-5: #FF2D55; /* Pink */
 
   --sidebar: var(--background);
   --sidebar-foreground: var(--foreground);
@@ -100,38 +102,39 @@
 .dark {
   /* Apple Design System - Dark Mode */
   --background: #000000;
-  --foreground: #F5F5F7;
+  --foreground: #FFFFFF;
   
   --card: #1D1D1F;
-  --card-foreground: #F5F5F7;
+  --card-foreground: #FFFFFF;
   
   --popover: #1D1D1F;
-  --popover-foreground: #F5F5F7;
+  --popover-foreground: #FFFFFF;
   
   --primary: #FFFFFF; /* White for Buttons in Dark Mode */
   --primary-foreground: #000000;
   
   --secondary: #1D1D1F;
-  --secondary-foreground: #F5F5F7;
+  --secondary-foreground: #FFFFFF;
   
   --muted: #1D1D1F;
   --muted-foreground: #86868B;
   
   --accent: #1D1D1F;
-  --accent-foreground: #F5F5F7;
+  --accent-foreground: #FFFFFF;
   
   --destructive: #FF453A;
   --destructive-foreground: #FFFFFF;
   
   --border: #424245;
   --input: #424245;
-  --ring: #86868B;
+  --ring: #FF9500;
   
-  --chart-1: #0A84FF;
-  --chart-2: #30D158;
-  --chart-3: #BF5AF2;
-  --chart-4: #FF375F;
-  --chart-5: #FF9F0A;
+  /* Apple Charts - Vibrant & Modern */
+  --chart-1: #FF9500; /* Orange */
+  --chart-2: #0A84FF; /* Blue */
+  --chart-3: #30D158; /* Green */
+  --chart-4: #BF5AF2; /* Purple */
+  --chart-5: #FF375F; /* Pink */
 
   --sidebar: var(--background);
   --sidebar-foreground: var(--foreground);

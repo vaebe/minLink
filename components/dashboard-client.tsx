@@ -5,7 +5,7 @@ import { LinkGrid } from '@/components/link-grid'
 import { CreateLinkDialog } from '@/components/create-link-dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { LayoutDashboard, Search, Filter, Globe, Lock, BarChart3, ArrowUpDown, MousePointerClick, Link as LinkIcon } from 'lucide-react'
+import { LayoutDashboard, Search, Filter, Globe, Lock, BarChart3, ArrowUpDown } from 'lucide-react'
 import {
   Select,
   SelectContent,
@@ -13,7 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -101,44 +100,26 @@ export function DashboardClient({ links }: { links: LinkItem[] }) {
         </div>
       </div>
 
-      {/* Stats Overview */}
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card className="bg-card/50 backdrop-blur-sm border-primary/10 gap-2">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">总链接数</CardTitle>
-            <LinkIcon className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalLinks}</div>
-            <p className="text-xs text-muted-foreground">
-              当前账号下的所有短链
-            </p>
-          </CardContent>
-        </Card>
-        <Card className="bg-card/50 backdrop-blur-sm border-primary/10 gap-2">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">总访问量</CardTitle>
-            <MousePointerClick className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalVisits}</div>
-            <p className="text-xs text-muted-foreground">
-              所有短链的累计点击次数
-            </p>
-          </CardContent>
-        </Card>
-        <Card className="bg-card/50 backdrop-blur-sm border-primary/10 gap-2">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">公开链接</CardTitle>
-            <Globe className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.publicLinks}</div>
-            <p className="text-xs text-muted-foreground">
-              可在发现页被检索的链接
-            </p>
-          </CardContent>
-        </Card>
+      {/* Stats Overview - Compact Design */}
+      <div className="grid grid-cols-3 divide-x divide-border/40 bg-card/40 backdrop-blur-md rounded-2xl border border-border/40 p-4 sm:p-6 shadow-sm">
+        <div className="flex flex-col items-center justify-center gap-1 px-2">
+           <span className="text-xs sm:text-sm font-medium text-muted-foreground">总链接数</span>
+           <div className="flex items-baseline gap-1">
+             <span className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">{stats.totalLinks}</span>
+           </div>
+        </div>
+        <div className="flex flex-col items-center justify-center gap-1 px-2">
+           <span className="text-xs sm:text-sm font-medium text-muted-foreground">总访问量</span>
+           <div className="flex items-baseline gap-1">
+             <span className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">{stats.totalVisits}</span>
+           </div>
+        </div>
+        <div className="flex flex-col items-center justify-center gap-1 px-2">
+           <span className="text-xs sm:text-sm font-medium text-muted-foreground">公开链接</span>
+           <div className="flex items-baseline gap-1">
+             <span className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">{stats.publicLinks}</span>
+           </div>
+        </div>
       </div>
 
       {/* Filter & Search Bar */}

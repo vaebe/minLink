@@ -68,10 +68,10 @@ export function HeroForm({ isAuthenticated }: HeroFormProps) {
       <div
         className={`
             relative flex items-center p-1 rounded-full transition-all duration-300 ease-out
-            ${focused ? 'ring-4 ring-blue-500/10 bg-background shadow-xl scale-[1.02]' : 'bg-secondary/50 shadow-sm hover:shadow-md'}
+            ${focused ? 'ring-4 ring-orange-apple/20 bg-background shadow-xl scale-[1.02]' : 'bg-secondary/50 shadow-sm hover:shadow-md'}
           `}
       >
-        <div className={`absolute left-5 transition-colors duration-300 ${focused ? 'text-blue-500' : 'text-muted-foreground'}`}>
+        <div className={`absolute left-5 transition-colors duration-300 ${focused ? 'text-orange-apple' : 'text-muted-foreground'}`}>
           <Link2 className="w-5 h-5" />
         </div>
         <Input

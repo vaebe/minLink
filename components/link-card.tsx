@@ -1,10 +1,7 @@
-
 'use client'
 
-import { Card, CardFooter, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Copy, Trash2, Globe, Lock, BarChart2, QrCode, Download } from 'lucide-react'
+import { Copy, Trash2, Globe, Lock, BarChart2, QrCode, Download, MoreHorizontal, ExternalLink } from 'lucide-react'
 import { toast } from 'sonner'
 import { deleteLink, updateLinkState } from '@/app/actions'
 import { useMemo, useRef, useState } from 'react'
@@ -17,14 +14,19 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-  DialogClose,
 } from '@/components/ui/dialog'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { motion } from 'framer-motion'
 
 const QRCodeCanvas = dynamic(() => import('qrcode.react').then((mod) => mod.QRCodeCanvas), { ssr: false })
@@ -51,9 +53,10 @@ export function LinkCard({ link, readOnly = false }: { link: LinkItem, readOnly?
   }, [link.short_code])
   const qrRef = useRef<HTMLDivElement>(null)
 
-  const copyToClipboard = () => {
+  const copyToClipboard = (e: React.MouseEvent) => {
+    e.stopPropagation()
     navigator.clipboard.writeText(shortUrl)
-    toast.success('链接已复制到剪贴板')
+    toast.success('链接已复制')
   }
 
   const downloadQRCode = () => {
@@ -94,56 +97,95 @@ export function LinkCard({ link, readOnly = false }: { link: LinkItem, readOnly?
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.95 }}
+      exit={{ opacity: 0, scale: 0.98 }}
       layout
+      className="group"
     >
-      <Card className="group relative overflow-hidden transition-all hover:shadow-lg hover:border-primary/20 border-border/60 bg-card/50 backdrop-blur-sm">
-        <div className="absolute top-0 right-0 w-24 h-24 bg-linear-to-bl from-primary/5 to-transparent rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-150 duration-500" />
+      <div className="relative p-5 rounded-2xl bg-card border border-border/40 transition-all duration-300 hover:shadow-lg hover:border-border/60 hover:-translate-y-0.5">
         
-        <CardHeader className="p-5 pb-3">
-          <div className="flex items-start justify-between">
-            <div className="space-y-2 max-w-[80%] z-10">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-bold text-xl tracking-tight text-foreground group-hover:text-primary transition-colors">
+        {/* Top Row: Short Code & Actions */}
+        <div className="flex items-start justify-between mb-3">
+          <div className="flex items-center gap-2">
+             <div className="flex items-center gap-1.5 group/link cursor-pointer" onClick={copyToClipboard}>
+                <span className="font-bold text-2xl tracking-tight text-foreground group-hover/link:text-orange-apple transition-colors">
                   /{link.short_code}
                 </span>
-                <Badge variant={link.is_public ? "secondary" : "outline"} className="text-[10px] h-5 px-2 font-normal">
-                  {link.is_public ? <Globe className="w-3 h-3 mr-1" /> : <Lock className="w-3 h-3 mr-1" />}
-                  {link.is_public ? '公开' : '私有'}
-                </Badge>
+                <Copy className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover/link:opacity-100 transition-opacity" />
+             </div>
+             {link.is_public && (
+               <div className="w-1.5 h-1.5 rounded-full bg-green-500 mb-3 ml-0.5" title="公开" />
+             )}
+          </div>
+          
+          <div className="flex items-center -mr-2">
+             {!readOnly && (
+               <DropdownMenu>
+                 <DropdownMenuTrigger asChild>
+                   <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
+                     <MoreHorizontal className="w-4 h-4" />
+                   </Button>
+                 </DropdownMenuTrigger>
+                 <DropdownMenuContent align="end" className="w-40 rounded-xl">
+                   <DropdownMenuItem onClick={handleTogglePublic}>
+                     {link.is_public ? <Lock className="mr-2 h-4 w-4" /> : <Globe className="mr-2 h-4 w-4" />}
+                     {link.is_public ? '设为私有' : '设为公开'}
+                   </DropdownMenuItem>
+                   <DropdownMenuItem onClick={() => window.open(shortUrl, '_blank')}>
+                      <ExternalLink className="mr-2 h-4 w-4" />
+                      访问链接
+                   </DropdownMenuItem>
+                   <DropdownMenuSeparator />
+                   <DropdownMenuItem className="text-destructive focus:text-destructive focus:bg-destructive/5" onClick={() => setDeleteOpen(true)}>
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      删除
+                   </DropdownMenuItem>
+                 </DropdownMenuContent>
+               </DropdownMenu>
+             )}
+          </div>
+        </div>
+
+        {/* Middle: Original URL */}
+        <div className="mb-6 space-y-1">
+          <p className="text-sm text-muted-foreground truncate max-w-full font-mono bg-secondary/30 px-2 py-1 rounded-md inline-block" title={link.original_url}>
+            {link.original_url}
+          </p>
+          {link.description && (
+            <p className="text-sm text-foreground/80 pl-1 line-clamp-1">
+              {link.description}
+            </p>
+          )}
+        </div>
+
+        {/* Bottom: Stats & Quick Actions */}
+        <div className="flex items-center justify-between pt-4 border-t border-border/30">
+           <div className="flex items-center gap-4 text-xs font-medium text-muted-foreground">
+              <div className="flex items-center gap-1.5" title="总访问量">
+                 <BarChart2 className="w-3.5 h-3.5" />
+                 {link.visits_count}
               </div>
-              
-              <div className="space-y-1">
-                <p className="text-sm text-muted-foreground truncate font-mono bg-muted/30 p-1 px-2 rounded w-fit max-w-full" title={link.original_url}>
-                  {link.original_url}
-                </p>
-                {link.description && (
-                  <p className="text-xs text-muted-foreground/80 pl-1 border-l-2 border-primary/20 line-clamp-1">
-                    {link.description}
-                  </p>
-                )}
+              <div className="flex items-center gap-1.5" title="创建时间">
+                 <span className="w-1 h-1 rounded-full bg-muted-foreground/40" />
+                 {new Date(link.created_at).toLocaleDateString()}
               </div>
-            </div>
-            
-            <div className="flex gap-1 z-10">
-              <Button variant="ghost" size="icon" onClick={copyToClipboard} className="h-8 w-8 hover:bg-primary/10 hover:text-primary transition-colors" title="复制链接" aria-label="复制链接">
-                <Copy className="h-4 w-4" />
-              </Button>
+           </div>
+
+           <div className="flex items-center gap-1">
               <Popover open={isQrOpen} onOpenChange={setIsQrOpen}>
                 <PopoverTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-primary/10 hover:text-primary transition-colors" title="二维码" aria-label="显示二维码">
-                    <QrCode className="h-4 w-4" />
+                  <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-secondary">
+                    <QrCode className="w-3.5 h-3.5" />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-4" align="end">
+                <PopoverContent className="w-auto p-4 rounded-xl" align="end">
                   <div className="flex flex-col items-center gap-3" ref={qrRef}>
-                    <div className="p-2 bg-white rounded-lg shadow-sm border">
+                    <div className="p-2 bg-white rounded-lg shadow-sm border border-border/20">
                       {isQrOpen ? (
                         <QRCodeCanvas 
                           value={shortUrl} 
-                          size={160}
+                          size={140}
                           level="H"
                           includeMargin
                           imageSettings={{
@@ -157,79 +199,41 @@ export function LinkCard({ link, readOnly = false }: { link: LinkItem, readOnly?
                         />
                       ) : null}
                     </div>
-                    <Button size="sm" variant="outline" className="w-full text-xs" onClick={downloadQRCode}>
+                    <Button size="sm" variant="outline" className="w-full text-xs h-8" onClick={downloadQRCode}>
                       <Download className="w-3 h-3 mr-2" />
-                      下载二维码
+                      下载
                     </Button>
                   </div>
                 </PopoverContent>
               </Popover>
-            </div>
-          </div>
-        </CardHeader>
-        
-        <CardFooter className="p-4 pt-3 bg-muted/30 flex items-center justify-between border-t border-border/40 mt-3">
-          <div className="flex items-center gap-4 text-xs text-muted-foreground font-medium">
-            <div className="flex items-center gap-1.5" title="总访问量">
-              <BarChart2 className="h-3.5 w-3.5 text-primary/70" />
-              {link.visits_count}
-            </div>
-            <div title="创建时间">
-              {new Date(link.created_at).toLocaleDateString()}
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
-             <Button
-               asChild
-               variant="ghost"
-               size="icon"
-               className="h-7 w-7 hover:text-primary hover:bg-primary/10"
-               title="查看详情"
-               aria-label="查看详情"
-             >
-               <Link href={`/links/${link.id}`}>
-                 <BarChart2 className="h-3.5 w-3.5" />
-               </Link>
-             </Button>
-             {!readOnly && (
-               <>
-                 <Button variant="ghost" size="icon" className="h-7 w-7 hover:text-primary hover:bg-primary/10" onClick={handleTogglePublic} title={link.is_public ? "设为私有" : "设为公开"} aria-label={link.is_public ? "设为私有" : "设为公开"}>
-                  {link.is_public ? <Lock className="h-3.5 w-3.5" /> : <Globe className="h-3.5 w-3.5" />}
-                </Button>
-                <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-                  <DialogTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-7 w-7 text-destructive/70 hover:text-destructive hover:bg-destructive/10"
-                      disabled={isDeleting}
-                      title="删除"
-                      aria-label="删除短链"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>删除短链</DialogTitle>
-                      <DialogDescription>该操作不可撤销。</DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                      <DialogClose asChild>
-                        <Button variant="outline">取消</Button>
-                      </DialogClose>
-                      <Button variant="destructive" onClick={handleDelete} disabled={isDeleting}>
-                        删除
-                      </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-               </>
-             )}
-          </div>
-        </CardFooter>
-      </Card>
+
+              <Button asChild variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-secondary">
+                 <Link href={`/links/${link.id}`}>
+                   <BarChart2 className="w-3.5 h-3.5" />
+                 </Link>
+              </Button>
+           </div>
+        </div>
+      </div>
+      
+      {/* Delete Dialog */}
+      <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <DialogContent className="sm:max-w-[425px] rounded-2xl">
+          <DialogHeader>
+            <DialogTitle>确认删除</DialogTitle>
+            <DialogDescription>
+              此操作将永久删除短链 /{link.short_code} 及其所有访问数据，无法恢复。
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setDeleteOpen(false)} className="rounded-xl">取消</Button>
+            <Button variant="destructive" onClick={handleDelete} disabled={isDeleting} className="rounded-xl">
+              {isDeleting ? '删除中...' : '确认删除'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
     </motion.div>
   )
 }
