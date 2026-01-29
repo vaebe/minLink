@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell, TableCaption } from '@/components/ui/table'
 import { ArrowLeft, Search } from 'lucide-react'
 
 function maskIp(ip: string | null) {
@@ -121,13 +122,8 @@ export default async function LinkVisitsPage({
   const totalPages = Math.max(1, Math.ceil(total / pageSize))
 
   return (
-    <div className="min-h-screen bg-background relative pb-20">
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-linear-to-bl from-primary/5 to-transparent opacity-60 rounded-bl-full" />
-        <div className="absolute inset-0 bg-grid-small-black/[0.05] -z-10" />
-      </div>
-
-      <div className="container max-w-7xl py-8 space-y-6 relative z-10">
+    <div className="min-h-screen relative pb-20">
+      <div className="mx-auto max-w-7xl py-8 space-y-6 relative z-10">
         <Link href={`/links/${id}?range=${rangeDays}`} className="text-muted-foreground hover:text-foreground flex items-center text-sm w-fit transition-colors">
           <ArrowLeft className="mr-1 h-4 w-4" /> 返回统计
         </Link>
@@ -187,46 +183,44 @@ export default async function LinkVisitsPage({
             {!visits || visits.length === 0 ? (
               <div className="text-sm text-muted-foreground py-8 text-center">暂无访问记录</div>
             ) : (
-              <div className="relative w-full overflow-x-auto">
-                <table className="w-full caption-bottom text-sm">
-                  <caption className="sr-only">访问明细表</caption>
-                  <thead className="[&_tr]:border-b">
-                    <tr>
-                      <th className="text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap">时间</th>
-                      <th className="text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap">地区</th>
-                      <th className="text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap">Referrer</th>
-                      <th className="text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap">IP</th>
-                      <th className="text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap">User-Agent</th>
-                    </tr>
-                  </thead>
-                  <tbody className="[&_tr:last-child]:border-0">
-                    {visits.map((v) => {
-                      const time = new Date(v.created_at).toLocaleString('zh-CN')
-                      const region = `${(v.country || '未知').toString()} ${(v.city || '').toString()}`.trim()
-                      const refHost = normalizeReferrer(v.referrer)
-                      const ua = (v.user_agent || '').toString()
-                      const uaShort = ua.length > 64 ? `${ua.slice(0, 64)}…` : ua
-                      return (
-                        <tr key={v.id} className="hover:bg-muted/50 border-b transition-colors">
-                          <td className="p-2 align-middle whitespace-nowrap font-mono text-xs">{time}</td>
-                          <td className="p-2 align-middle whitespace-nowrap">{region || '未知'}</td>
-                          <td className="p-2 align-middle whitespace-nowrap">
-                            <span className="truncate inline-block max-w-[220px]" title={v.referrer || ''}>
-                              {refHost}
-                            </span>
-                          </td>
-                          <td className="p-2 align-middle whitespace-nowrap font-mono text-xs">{maskIp(v.ip ? String(v.ip) : null)}</td>
-                          <td className="p-2 align-middle whitespace-nowrap">
-                            <span className="truncate inline-block max-w-[420px]" title={ua}>
-                              {uaShort || '—'}
-                            </span>
-                          </td>
-                        </tr>
-                      )
-                    })}
-                  </tbody>
-                </table>
-              </div>
+              <Table>
+                <TableCaption className="sr-only">访问明细表</TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>时间</TableHead>
+                    <TableHead>地区</TableHead>
+                    <TableHead>Referrer</TableHead>
+                    <TableHead>IP</TableHead>
+                    <TableHead>User-Agent</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {visits.map((v) => {
+                    const time = new Date(v.created_at).toLocaleString('zh-CN')
+                    const region = `${(v.country || '未知').toString()} ${(v.city || '').toString()}`.trim()
+                    const refHost = normalizeReferrer(v.referrer)
+                    const ua = (v.user_agent || '').toString()
+                    const uaShort = ua.length > 64 ? `${ua.slice(0, 64)}…` : ua
+                    return (
+                      <TableRow key={v.id}>
+                        <TableCell className="font-mono text-xs">{time}</TableCell>
+                        <TableCell>{region || '未知'}</TableCell>
+                        <TableCell>
+                          <span className="truncate inline-block max-w-55" title={v.referrer || ''}>
+                            {refHost}
+                          </span>
+                        </TableCell>
+                        <TableCell className="font-mono text-xs">{maskIp(v.ip ? String(v.ip) : null)}</TableCell>
+                        <TableCell>
+                          <span className="truncate inline-block max-w-105" title={ua}>
+                            {uaShort || '—'}
+                          </span>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
             )}
 
             <div className="flex items-center justify-between gap-3">

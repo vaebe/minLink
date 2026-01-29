@@ -109,7 +109,7 @@ export function LinkCard({ link, readOnly = false }: { link: LinkItem, readOnly?
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-2">
              <div className="flex items-center gap-1.5 group/link cursor-pointer" onClick={copyToClipboard}>
-                <span className="font-bold text-2xl tracking-tight text-foreground group-hover/link:text-orange-apple transition-colors">
+                <span className="font-bold text-2xl tracking-tight text-foreground group-hover/link:text-orange-300 transition-colors">
                   /{link.short_code}
                 </span>
                 <Copy className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover/link:opacity-100 transition-opacity" />
@@ -218,7 +218,7 @@ export function LinkCard({ link, readOnly = false }: { link: LinkItem, readOnly?
       
       {/* Delete Dialog */}
       <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-        <DialogContent className="sm:max-w-[425px] rounded-2xl">
+        <DialogContent className="sm:max-w-106.25 rounded-2xl">
           <DialogHeader>
             <DialogTitle>确认删除</DialogTitle>
             <DialogDescription>

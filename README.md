@@ -47,6 +47,7 @@ cp example.env .env.local
 ```
 
 在 [Supabase](https://supabase.com) 创建项目，获取：
+
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY`
 
@@ -71,7 +72,7 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=your_supabase_anon_key
 pnpm dev
 ```
 
-访问 http://localhost:3000
+访问 <http://localhost:3000>
 
 ### 构建
 
@@ -82,7 +83,7 @@ pnpm start
 
 ## 项目结构
 
-```
+```bash
 min-link/
 ├── app/                    # Next.js App Router
 │   ├── actions.ts         # Server Actions

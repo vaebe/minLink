@@ -79,7 +79,7 @@ export default async function AnalyticsPage({
     const message = (rpcErrors[0]?.message || '').toString()
     return (
       <div className="min-h-screen bg-background relative pb-20">
-        <div className="container max-w-3xl py-16 space-y-6">
+        <div className="max-w-3xl py-16 space-y-6">
           <div className="text-3xl font-bold">统计暂不可用</div>
           <div className="text-muted-foreground">
             请确认已在 Supabase Dashboard 的 SQL Editor 执行 supabase/schema.sql（包含 analytics_time / analytics_region / analytics_device）。
@@ -131,14 +131,8 @@ export default async function AnalyticsPage({
   })()
 
   return (
-    <div className="min-h-screen bg-background relative pb-20 font-sans text-foreground selection:bg-primary/20">
-      {/* Subtle Background */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-blue-500/5 blur-[120px]" />
-        <div className="absolute bottom-[-20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-purple-500/5 blur-[120px]" />
-      </div>
-
-      <div className="container mx-auto max-w-7xl py-8 space-y-8 relative z-10 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen pb-20 font-sans text-foreground selection:bg-primary/20">
+      <div className="mx-auto max-w-7xl py-8 space-y-8 relative z-10 px-4 sm:px-6 lg:px-8">
         <AnalyticsHeader
           user={user}
           links={links || []}
@@ -149,10 +143,8 @@ export default async function AnalyticsPage({
           scopeLabel={scopeLabel}
         />
 
-        {/* Bento Grid Layout */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           
-          {/* Main Chart - Spans 8 cols */}
           <Card className="col-span-1 md:col-span-8 glass-panel border-0 shadow-sm flex flex-col">
             <CardHeader className="pb-2">
               <CardTitle className="text-lg font-semibold">访问趋势</CardTitle>
@@ -160,7 +152,7 @@ export default async function AnalyticsPage({
                 {dateType === '24h' ? '过去 24 小时' : `过去 ${dateType.replace('d', '')} 天`} PV (浏览量) 与 UV (访客数)
               </CardDescription>
             </CardHeader>
-            <CardContent className="flex-1 min-h-[350px] px-2">
+            <CardContent className="flex-1 min-h-87.5 px-2">
               <VisitsChartSection data={safeTime} />
             </CardContent>
           </Card>
@@ -192,7 +184,7 @@ export default async function AnalyticsPage({
           </div>
 
           {/* Top Lists - Split 6/6 */}
-          <div className="col-span-1 md:col-span-6 h-[500px]">
+          <div className="col-span-1 md:col-span-6 h-125">
              <TopListCard
                icon={<MapPinned className="h-4 w-4" />}
                title="地理分布"
@@ -213,7 +205,7 @@ export default async function AnalyticsPage({
              />
           </div>
 
-          <div className="col-span-1 md:col-span-6 h-[500px]">
+          <div className="col-span-1 md:col-span-6 h-125">
              <TopListCard
                icon={<Monitor className="h-4 w-4" />}
                title="设备环境"

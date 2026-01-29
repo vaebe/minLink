@@ -29,5 +29,8 @@ jobs:
       - name: Run lint
         run: pnpm lint
 
+      - name: Create env file
+        run: cp example.env .env.local
+
       - name: Build
         run: pnpm build
