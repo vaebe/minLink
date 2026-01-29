@@ -30,7 +30,7 @@ export function HomeHero({ isAuthenticated }: { isAuthenticated: boolean }) {
   }
 
   return (
-    <section className="relative w-full overflow-hidden pt-32 pb-20 md:pt-48 md:pb-40 bg-background flex flex-col items-center justify-center">
+    <section className="relative w-full overflow-hidden pt-32 pb-20 md:pt-48 md:pb-40 flex flex-col items-center justify-center">
       <motion.div
         variants={container}
         initial="hidden"

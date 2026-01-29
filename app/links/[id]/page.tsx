@@ -40,7 +40,7 @@ export default async function LinkDetailsPage({
   if (!link.is_public && !isOwner) {
     // If private and not owner, deny
     return (
-      <div className="container flex flex-col items-center justify-center min-h-[60vh] space-y-6">
+      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
         <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center">
           <Lock className="w-10 h-10 text-muted-foreground" />
         </div>

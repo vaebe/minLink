@@ -37,7 +37,7 @@ function CreateLink(config: { href: string; text: string }) {
   )
 }
 
-function UserInfo({ user }: { user: SupabaseUser | null }) {
+function UserInfo({ user }: { user?: SupabaseUser }) {
   const reduceMotion = useReducedMotion()
 
   const supabase = React.useMemo(() => createClient(), [])
@@ -67,7 +67,7 @@ function UserInfo({ user }: { user: SupabaseUser | null }) {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className="relative h-10 w-10 rounded-full transition-all duration-200 hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-apple focus-visible:ring-offset-2"
+                className="cursor-pointer h-10 w-10 rounded-full transition-all duration-200 hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-300 focus-visible:ring-offset-2"
               >
                 <Avatar className="h-9 w-9 border border-border/50">
                   <AvatarImage src={user.user_metadata.avatar_url} alt={user.email || ''} />
@@ -81,7 +81,7 @@ function UserInfo({ user }: { user: SupabaseUser | null }) {
               <DropdownMenuLabel className="font-normal p-0 mb-1">
                 <div className="flex flex-col space-y-1 bg-secondary/50 p-2.5 rounded-md">
                   <p className="text-sm font-medium leading-none text-foreground">{user.user_metadata.full_name || 'User'}</p>
-                  <p className="text-xs leading-none text-muted-foreground break-all">
+                  <p className="text-xs leading-none break-all">
                     {user.email}
                   </p>
                 </div>
@@ -89,10 +89,10 @@ function UserInfo({ user }: { user: SupabaseUser | null }) {
 
               <DropdownMenuItem
                 onClick={handleLogout}
-                className="cursor-pointer h-9 rounded-md text-muted-foreground hover:text-destructive focus:text-destructive focus:bg-destructive/5 mt-1"
+                className="cursor-pointer h-9 rounded-md mt-1"
               >
                 <LogOut className="mr-2 h-4 w-4" />
-                <span className="font-medium">登出</span>
+                <span className="font-medium text-red-500">登出</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -110,10 +110,10 @@ function UserInfo({ user }: { user: SupabaseUser | null }) {
   )
 }
 
-export function SiteHeader({ initialUser = null }: { initialUser?: SupabaseUser | null }) {
+export function SiteHeader() {
   const [scrolled, setScrolled] = React.useState(false)
   const { scrollY } = useScroll()
-  const [user, setUser] = React.useState<SupabaseUser | null>(initialUser)
+  const [user, setUser] = React.useState<SupabaseUser>()
   const router = useRouter()
   const supabase = React.useMemo(() => createClient(), [])
 
@@ -123,7 +123,7 @@ export function SiteHeader({ initialUser = null }: { initialUser?: SupabaseUser 
 
   React.useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null)
+      setUser(session?.user)
       if (event === 'SIGNED_OUT') {
         router.refresh()
       }
@@ -145,7 +145,7 @@ export function SiteHeader({ initialUser = null }: { initialUser?: SupabaseUser 
           : "bg-background/0 border-b border-transparent"
       )}
     >
-      <div className="container mx-auto flex h-16 max-w-screen-2xl items-center justify-between px-4 md:px-8">
+      <div className="mx-auto flex h-16 max-w-screen-2xl items-center justify-between px-4 md:px-8">
         <Link href="/" className="flex items-center space-x-3 group">
           <Image
             src='/logo/dark.png'

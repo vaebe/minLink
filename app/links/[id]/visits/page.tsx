@@ -122,12 +122,7 @@ export default async function LinkVisitsPage({
 
   return (
     <div className="min-h-screen bg-background relative pb-20">
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-linear-to-bl from-primary/5 to-transparent opacity-60 rounded-bl-full" />
-        <div className="absolute inset-0 bg-grid-small-black/[0.05] -z-10" />
-      </div>
-
-      <div className="container max-w-7xl py-8 space-y-6 relative z-10">
+      <div className="max-w-7xl py-8 space-y-6 relative z-10">
         <Link href={`/links/${id}?range=${rangeDays}`} className="text-muted-foreground hover:text-foreground flex items-center text-sm w-fit transition-colors">
           <ArrowLeft className="mr-1 h-4 w-4" /> 返回统计
         </Link>

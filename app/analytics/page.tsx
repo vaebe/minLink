@@ -79,7 +79,7 @@ export default async function AnalyticsPage({
     const message = (rpcErrors[0]?.message || '').toString()
     return (
       <div className="min-h-screen bg-background relative pb-20">
-        <div className="container max-w-3xl py-16 space-y-6">
+        <div className="max-w-3xl py-16 space-y-6">
           <div className="text-3xl font-bold">统计暂不可用</div>
           <div className="text-muted-foreground">
             请确认已在 Supabase Dashboard 的 SQL Editor 执行 supabase/schema.sql（包含 analytics_time / analytics_region / analytics_device）。
@@ -132,13 +132,7 @@ export default async function AnalyticsPage({
 
   return (
     <div className="min-h-screen bg-background relative pb-20 font-sans text-foreground selection:bg-primary/20">
-      {/* Subtle Background */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-blue-500/5 blur-[120px]" />
-        <div className="absolute bottom-[-20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-purple-500/5 blur-[120px]" />
-      </div>
-
-      <div className="container mx-auto max-w-7xl py-8 space-y-8 relative z-10 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl py-8 space-y-8 relative z-10 px-4 sm:px-6 lg:px-8">
         <AnalyticsHeader
           user={user}
           links={links || []}

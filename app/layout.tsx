@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Outfit, Work_Sans } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
-import { SiteHeaderWrapper } from "@/components/site-header-wrapper";
+import { SiteHeader } from "@/components/site-header";
 
 const fontHeading = Outfit({
   subsets: ["latin"],
@@ -31,9 +31,14 @@ export default function RootLayout({
       <body
         className={`${fontHeading.variable} ${fontBody.variable} antialiased min-h-screen bg-background font-sans text-foreground`}
       >
-        <div className="relative flex min-h-screen flex-col">
-          <SiteHeaderWrapper />
+        <div className="relative flex min-h-screen flex-col bg-[url('/grid-black.svg')] bg-top bg-repeat dark:bg-[url('/grid.svg')]">
+          <SiteHeader />
           <div className="flex-1 pt-16">{children}</div>
+
+          <div className="fixed inset-0 z-0 pointer-events-none">
+            <div className="absolute top-[-20%] right-[-10%] w-150 h-150 rounded-full bg-blue-500/5 blur-[120px]" />
+            <div className="absolute bottom-[-20%] left-[-10%] w-125 h-125 rounded-full bg-purple-500/5 blur-[120px]" />
+          </div>
         </div>
         <Toaster />
       </body>
