@@ -1,27 +1,22 @@
 "use client"
 
-import * as React from "react"
-import * as RechartsPrimitive from "recharts"
-
+import {ComponentProps} from "react"
+import {ResponsiveContainer} from "recharts"
 import { cn } from "@/lib/utils"
-
 import type { ChartConfig } from "./context"
 import { ChartContext } from "./context"
 import { ChartStyle } from "./style"
+import { nanoid } from 'nanoid'
 
 export function ChartContainer({
-  id,
   className,
   children,
   config,
-}: React.ComponentProps<"div"> & {
+}: ComponentProps<"div"> & {
   config: ChartConfig
-  children: React.ComponentProps<
-    typeof RechartsPrimitive.ResponsiveContainer
-  >["children"]
+  children: ComponentProps<  typeof ResponsiveContainer>["children"]
 }) {
-  const uniqueId = React.useId()
-  const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`
+  const chartId = `chart-${nanoid(6)}`
 
   return (
     <ChartContext.Provider value={{ config }}>
@@ -34,9 +29,9 @@ export function ChartContainer({
         )}
       >
         <ChartStyle id={chartId} config={config} />
-        <RechartsPrimitive.ResponsiveContainer>
+        <ResponsiveContainer>
           {children}
-        </RechartsPrimitive.ResponsiveContainer>
+        </ResponsiveContainer>
       </div>
     </ChartContext.Provider>
   )

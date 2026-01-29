@@ -3,7 +3,7 @@
 
 import * as React from 'react'
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
-import { ChartContainer, ChartTooltip, type ChartConfig } from '@/components/ui/chart'
+import { ChartContainer, ChartTooltip, type ChartConfig } from '@/components/chart'
 import type { VisitsChartPoint } from '@/lib/analytics/types'
 import { VisitsChartTooltipContent } from '@/components/visits-chart-tooltip'
 
