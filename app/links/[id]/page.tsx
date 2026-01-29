@@ -124,7 +124,7 @@ export default async function LinkDetailsPage({
     const message = (rpcErrors[0]?.message || '').toString()
     return (
       <div className="min-h-screen bg-background relative pb-20">
-        <div className="container max-w-3xl py-16 space-y-6">
+        <div className="max-w-3xl py-16 space-y-6">
           <div className="text-3xl font-bold">统计暂不可用</div>
           <div className="text-muted-foreground">
             请确认已在 Supabase Dashboard 的 SQL Editor 执行 supabase/schema.sql（包含 analytics_time / analytics_region / analytics_device / analytics_referrer）。
@@ -164,14 +164,8 @@ export default async function LinkDetailsPage({
   const topDevices = ((deviceRes.data || []) as AnalyticsTopRow[]).map((x) => [normalizeLabel(x.name), Number(x.clicks)] as const)
 
   return (
-    <div className="min-h-screen bg-background relative pb-20">
-      {/* Background elements */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-linear-to-bl from-primary/5 to-transparent opacity-60 rounded-bl-full" />
-        <div className="absolute inset-0 bg-grid-small-black/[0.05] -z-10" />
-      </div>
-
-      <div className="container max-w-7xl py-8 space-y-8 relative z-10">
+    <div className="min-h-screen">
+      <div className="mx-auto max-w-7xl py-8 space-y-8 relative z-10 px-4 sm:px-6 lg:px-8">
         <LinkDetailsHeader link={link} shortUrl={shortUrl} />
 
         <div className="flex items-center justify-end gap-2">

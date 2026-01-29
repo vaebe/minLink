@@ -16,17 +16,8 @@ export default async function ExplorePage() {
     .limit(50)
 
   return (
-    <div className="min-h-screen bg-background relative">
-      {/* Background elements */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-0 right-0 w-full h-[400px] bg-linear-to-b from-primary/5 to-transparent opacity-60" />
-        <div className="absolute inset-0 bg-grid-small-black/[0.05] -z-10" />
-        {/* 暖色调光晕 */}
-        <div className="absolute top-40 left-1/4 h-[280px] w-[280px] rounded-full bg-primary/15 opacity-20 blur-[90px]" />
-        <div className="absolute bottom-40 right-1/4 h-[320px] w-[320px] rounded-full bg-amber-400/15 opacity-20 blur-[100px]" />
-      </div>
-
-      <div className="container mx-auto max-w-7xl py-8 space-y-8 relative z-10 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen">
+      <div className="mx-auto max-w-7xl py-8 space-y-8 relative z-10 px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col space-y-2 border-b border-border/40 pb-6">
           <div className="space-y-1">
              <h1 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-r from-foreground to-foreground/70">
