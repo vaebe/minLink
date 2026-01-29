@@ -81,9 +81,9 @@ export function DashboardClient({ links }: { links: LinkItem[] }) {
   return (
     <div className="space-y-8">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-b border-border/40 pb-8">
-        <div className="space-y-1">
-          <h1 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-r from-primary to-primary/60">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-b border-border/40">
+        <div className="">
+          <h1 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-r from-primary to-primary/60 mb-1">
             控制台
           </h1>
           <p className="text-muted-foreground">
@@ -140,7 +140,7 @@ export function DashboardClient({ links }: { links: LinkItem[] }) {
         
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <Select value={sortType} onValueChange={setSortType}>
-            <SelectTrigger className="w-full sm:w-[160px] bg-background/50 border-primary/10">
+            <SelectTrigger className="w-full sm:w-40 bg-background/50 border-primary/10">
               <div className="flex items-center gap-2">
                 <ArrowUpDown className="w-3.5 h-3.5 text-muted-foreground" />
                 <SelectValue placeholder="排序" />
@@ -155,7 +155,7 @@ export function DashboardClient({ links }: { links: LinkItem[] }) {
           </Select>
 
           <Select value={filterType} onValueChange={setFilterType}>
-            <SelectTrigger className="w-full sm:w-[140px] bg-background/50 border-primary/10">
+            <SelectTrigger className="w-full sm:w-35 bg-background/50 border-primary/10">
               <div className="flex items-center gap-2">
                 <Filter className="w-3.5 h-3.5 text-muted-foreground" />
                 <SelectValue placeholder="筛选" />

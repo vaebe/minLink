@@ -122,7 +122,7 @@ export default async function LinkVisitsPage({
   const totalPages = Math.max(1, Math.ceil(total / pageSize))
 
   return (
-    <div className="min-h-screen bg-background relative pb-20">
+    <div className="min-h-screen relative pb-20">
       <div className="mx-auto max-w-7xl py-8 space-y-6 relative z-10">
         <Link href={`/links/${id}?range=${rangeDays}`} className="text-muted-foreground hover:text-foreground flex items-center text-sm w-fit transition-colors">
           <ArrowLeft className="mr-1 h-4 w-4" /> 返回统计
