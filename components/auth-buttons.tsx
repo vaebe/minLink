@@ -3,9 +3,9 @@
 
 import { createClient } from '@/utils/supabase/client'
 import { Button } from '@/components/ui/button'
-import { Github } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import Image from 'next/image'
 
 export function LoginButton() {
   const handleLogin = async () => {
@@ -23,8 +23,8 @@ export function LoginButton() {
   }
 
   return (
-    <Button onClick={handleLogin} variant="default" className="font-medium">
-      <Github className="mr-2 h-4 w-4" />
+    <Button onClick={handleLogin} variant="default" className="font-medium cursor-pointer">
+      <Image src='/icon/github.svg' width={16} height={16} className='mr-2 h-4 w-4' alt='github'></Image>
       使用 GitHub 登录
     </Button>
   )

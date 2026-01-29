@@ -2,6 +2,29 @@ import Link from "next/link";
 import { Zap, Shield, BarChart3 } from "lucide-react";
 import { createClient } from "@/utils/supabase/server";
 import { HomeHero } from "@/components/home-hero";
+import Image from "next/image";
+
+function CFooter() {
+   return (
+      <footer className="py-12 bg-background border-t border-border/40">
+         <div className="mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-muted-foreground/60">
+            <div className="flex items-center gap-2">
+               <span className="font-semibold text-foreground/80">MinLink</span>
+               <span>© 2027-1</span>
+            </div>
+            <div className="flex gap-8">
+               <Link href="#" className="hover:text-foreground transition-colors">隐私政策</Link>
+               <Link href="#" className="hover:text-foreground transition-colors">服务条款</Link>
+               <Link href="https://github.com/vaebe/minLink" target="_blank" 
+               className="hover:text-foreground transition-colors flex items-center">
+                  <Image src='/icon/github.svg' width={16} height={16} className='mr-2 h-4 w-4' alt='github'></Image>
+                  GitHub
+               </Link>
+            </div>
+         </div>
+      </footer>
+   )
+}
 
 export default async function Home() {
    const supabase = await createClient();
@@ -23,7 +46,7 @@ export default async function Home() {
                         <h3 className="text-2xl md:text-3xl font-semibold tracking-tight">快，无感。</h3>
                         <p className="text-lg text-muted-foreground leading-relaxed">
                            平均响应时间 <span className="text-foreground font-medium">50ms</span>。
-                            <br/>
+                           <br />
                            无论是通过控制台还是 API，都能在眨眼间完成。
                         </p>
                      </div>
@@ -38,7 +61,7 @@ export default async function Home() {
                         <h3 className="text-2xl md:text-3xl font-semibold tracking-tight">洞察。</h3>
                         <p className="text-lg text-muted-foreground leading-relaxed">
                            精准的访问统计。
-                            <br/>
+                           <br />
                            地理位置、设备来源、时间趋势，一目了然。
                         </p>
                      </div>
@@ -53,7 +76,7 @@ export default async function Home() {
                         <h3 className="text-2xl md:text-3xl font-semibold tracking-tight">安全。</h3>
                         <p className="text-lg text-muted-foreground leading-relaxed">
                            基于 Supabase 企业级架构。
-                           <br/>
+                           <br />
                            RLS 行级安全策略，确保您的每一次访问都安全可靠。
                         </p>
                      </div>
@@ -62,19 +85,7 @@ export default async function Home() {
             </div>
          </section>
 
-         <footer className="py-12 bg-background border-t border-border/40">
-            <div className="mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-muted-foreground/60">
-               <div className="flex items-center gap-2">
-                  <span className="font-semibold text-foreground/80">MinLink</span>
-                  <span>© {new Date().getFullYear()}</span>
-               </div>
-               <div className="flex gap-8">
-                  <Link href="#" className="hover:text-foreground transition-colors">隐私政策</Link>
-                  <Link href="#" className="hover:text-foreground transition-colors">服务条款</Link>
-                  <Link href="https://github.com/vaebe/minLink" target="_blank" className="hover:text-foreground transition-colors">GitHub</Link>
-               </div>
-            </div>
-         </footer>
+         <CFooter></CFooter>
       </main>
    );
 }
