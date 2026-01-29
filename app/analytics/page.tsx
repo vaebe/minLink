@@ -154,7 +154,7 @@ export default async function AnalyticsPage({
                 {dateType === '24h' ? '过去 24 小时' : `过去 ${dateType.replace('d', '')} 天`} PV (浏览量) 与 UV (访客数)
               </CardDescription>
             </CardHeader>
-            <CardContent className="flex-1 min-h-[350px] px-2">
+            <CardContent className="flex-1 min-h-87.5 px-2">
               <VisitsChartSection data={safeTime} />
             </CardContent>
           </Card>
@@ -186,7 +186,7 @@ export default async function AnalyticsPage({
           </div>
 
           {/* Top Lists - Split 6/6 */}
-          <div className="col-span-1 md:col-span-6 h-[500px]">
+          <div className="col-span-1 md:col-span-6 h-125">
              <TopListCard
                icon={<MapPinned className="h-4 w-4" />}
                title="地理分布"
@@ -207,7 +207,7 @@ export default async function AnalyticsPage({
              />
           </div>
 
-          <div className="col-span-1 md:col-span-6 h-[500px]">
+          <div className="col-span-1 md:col-span-6 h-125">
              <TopListCard
                icon={<Monitor className="h-4 w-4" />}
                title="设备环境"

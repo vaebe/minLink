@@ -250,7 +250,7 @@ export default async function LinkDetailsPage({
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="h-[350px] px-2">
+            <CardContent className="h-87.5 px-2">
               <VisitsChartSection data={chartData} />
             </CardContent>
           </Card>
@@ -313,7 +313,7 @@ export default async function LinkDetailsPage({
                       <div key={ref} className="flex items-center justify-between text-sm">
                         <span className="flex items-center gap-2">
                           <Compass className="h-3.5 w-3.5 text-muted-foreground" />
-                          <span className="truncate max-w-[180px]" title={ref}>
+                          <span className="truncate max-w-45" title={ref}>
                             {ref}
                           </span>
                         </span>
