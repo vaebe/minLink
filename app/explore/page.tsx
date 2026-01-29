@@ -1,6 +1,7 @@
 
 import { createClient } from '@/utils/supabase/server'
 import { LinkGrid } from '@/components/link-grid'
+import { PageHeader } from '@/components/page-header'
 import { Globe } from 'lucide-react'
 
 export const revalidate = 60 // Revalidate every minute
@@ -18,16 +19,10 @@ export default async function ExplorePage() {
   return (
     <div className="min-h-screen">
       <div className="mx-auto max-w-7xl py-8 space-y-8 relative z-10 px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col space-y-2 border-b border-border/40 pb-6">
-          <div className="space-y-1">
-             <h1 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-r from-foreground to-foreground/70">
-                发现
-             </h1>
-          </div>
-          <p className="text-muted-foreground">
-            浏览社区公开的短链，发现有趣的内容。
-          </p>
-        </div>
+        <PageHeader
+          title="发现"
+          description="浏览社区公开的短链，发现有趣的内容。"
+        />
 
         {!links || links.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-32 border rounded-3xl border-dashed border-border/60 bg-card/30 backdrop-blur-sm">

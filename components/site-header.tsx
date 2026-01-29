@@ -139,10 +139,10 @@ export function SiteHeader() {
   return (
     <motion.header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 ",
         scrolled
           ? "bg-background/80 backdrop-blur-xl border-b border-border/40"
-          : "bg-background/0 border-b border-transparent"
+          : "bg-background/60 border-b border-transparent"
       )}
     >
       <div className="mx-auto flex h-16 max-w-screen-2xl items-center justify-between px-4 md:px-8">

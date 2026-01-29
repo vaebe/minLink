@@ -3,6 +3,7 @@
 import { useDeferredValue, useMemo, useState } from 'react'
 import { LinkGrid } from '@/components/link-grid'
 import { CreateLinkDialog } from '@/components/create-link-dialog'
+import { PageHeader } from '@/components/page-header'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { LayoutDashboard, Search, Filter, Globe, Lock, BarChart3, ArrowUpDown } from 'lucide-react'
@@ -81,24 +82,18 @@ export function DashboardClient({ links }: { links: LinkItem[] }) {
   return (
     <div className="space-y-8">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-b border-border/40">
-        <div className="">
-          <h1 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-r from-primary to-primary/60 mb-1">
-            控制台
-          </h1>
-          <p className="text-muted-foreground">
-            管理您的短链，查看实时数据分析。
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <Button asChild variant="outline" className="h-10">
-            <Link href="/analytics">
-              <BarChart3 className="mr-2 h-4 w-4" />
-              统计中心
-            </Link>
-          </Button>
-        </div>
-      </div>
+      <PageHeader
+        title="控制台"
+        description="管理您的短链，查看实时数据分析。"
+        gradient
+      >
+        <Button asChild variant="outline" className="h-10">
+          <Link href="/analytics">
+            <BarChart3 className="mr-2 h-4 w-4" />
+            统计中心
+          </Link>
+        </Button>
+      </PageHeader>
 
       {/* Stats Overview - Compact Design */}
       <div className="grid grid-cols-3 divide-x divide-border/40 bg-card/40 backdrop-blur-md rounded-2xl border border-border/40 p-4 sm:p-6 shadow-sm">

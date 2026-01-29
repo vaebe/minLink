@@ -131,7 +131,7 @@ export default async function AnalyticsPage({
   })()
 
   return (
-    <div className="min-h-screen bg-background relative pb-20 font-sans text-foreground selection:bg-primary/20">
+    <div className="min-h-screen pb-20 font-sans text-foreground selection:bg-primary/20">
       <div className="mx-auto max-w-7xl py-8 space-y-8 relative z-10 px-4 sm:px-6 lg:px-8">
         <AnalyticsHeader
           user={user}
@@ -143,10 +143,8 @@ export default async function AnalyticsPage({
           scopeLabel={scopeLabel}
         />
 
-        {/* Bento Grid Layout */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           
-          {/* Main Chart - Spans 8 cols */}
           <Card className="col-span-1 md:col-span-8 glass-panel border-0 shadow-sm flex flex-col">
             <CardHeader className="pb-2">
               <CardTitle className="text-lg font-semibold">访问趋势</CardTitle>

@@ -1,10 +1,12 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
+import { PageHeader } from '@/components/page-header'
 import { BarChart3, Lock, ChevronDown } from 'lucide-react'
 import type { DateType, DeviceDim, RegionDim } from '@/lib/analytics/types'
 import { buildAnalyticsUrl } from '@/lib/analytics/utils'
 import type { User as SupabaseUser } from '@supabase/supabase-js'
+import { Card } from '@/components/ui/card'
 
 type LinkItem = {
   id: string
@@ -31,12 +33,10 @@ export function AnalyticsHeader({
 }) {
   return (
     <div className="flex flex-col gap-8 pb-2">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div className="space-y-1">
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">统计中心</h1>
-          <p className="text-muted-foreground">实时监控访问趋势、地理分布与设备来源。</p>
-        </div>
-
+      <PageHeader
+        title="统计中心"
+        description="实时监控访问趋势、地理分布与设备来源。"
+      >
         <div className="bg-muted/50 p-1 rounded-xl inline-flex self-start md:self-auto backdrop-blur-md border border-border/50">
           {(['24h', '7d', '30d', '90d'] as const).map((t) => (
             <Button
@@ -54,9 +54,9 @@ export function AnalyticsHeader({
             </Button>
           ))}
         </div>
-      </div>
+      </PageHeader>
 
-      <div className="glass-panel rounded-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
+      <Card className="flex flex-col md:flex-row items-center justify-between gap-4 px-4">
         <div className="flex items-center gap-3 w-full md:w-auto pl-2">
           <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
             {user ? <BarChart3 className="w-5 h-5" /> : <Lock className="w-5 h-5" />}
@@ -99,7 +99,7 @@ export function AnalyticsHeader({
         ) : (
           <p className="text-sm text-muted-foreground pr-2">仅展示公开汇总数据</p>
         )}
-      </div>
+      </Card>
     </div>
   )
 }
