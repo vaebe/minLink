@@ -35,7 +35,7 @@ export async function createLink(data: LinkInput) {
   const validatedFields = linkSchema.safeParse(rawData)
 
   if (!validatedFields.success) {
-    return { error: validatedFields.error.flatten().fieldErrors.url?.[0] || 'Invalid data' }
+    return { error: validatedFields.error.issues[0].message || 'Invalid data' }
   }
 
   const { url, description, isPublic, expiresAt } = validatedFields.data
@@ -93,7 +93,7 @@ export async function updateLink(linkId: string, data: LinkInput) {
   const validatedFields = linkSchema.safeParse(rawData)
 
   if (!validatedFields.success) {
-    return { error: validatedFields.error.flatten().fieldErrors.url?.[0] || 'Invalid data' }
+    return { error: validatedFields.error.issues[0].message || 'Invalid data' }
   }
 
   const { url, description, isPublic, expiresAt } = validatedFields.data
