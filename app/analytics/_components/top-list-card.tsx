@@ -105,9 +105,9 @@ export function TopListCard({
                 asChild
                 variant="ghost"
                 size="sm"
-                className={`w-full h-7 text-xs font-medium rounded-md transition-all flex-1 ${
-                  x.key === activeKey ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'
-                }`}
+                className={`w-full h-7 text-xs font-medium rounded-md transition-all flex-1 cursor-pointer
+                  ${x.key === activeKey ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`
+                }
               >
                 <Link href={buildUrl(x.key)}>
                   {x.label}

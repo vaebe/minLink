@@ -60,7 +60,7 @@ export function CreateLinkDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+        <Button className="shadow-lg cursor-pointer hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
           <Plus className="h-4 w-4" /> 
           <span className='ml-2'>创建短链</span>
         </Button>

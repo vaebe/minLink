@@ -144,7 +144,7 @@ export default async function LinkVisitsPage({
                     asChild
                     size="sm"
                     variant={d === rangeDays ? 'default' : 'outline'}
-                    className="h-8"
+                    className="h-8 cursor-pointer"
                   >
                     <Link href={buildHref({ range: d, page: 1 })}>
                       {d} 天

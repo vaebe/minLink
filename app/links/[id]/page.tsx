@@ -50,7 +50,7 @@ export default async function LinkDetailsPage({
             该短链是私有的，只有创建者可以查看详情。
           </p>
         </div>
-        <Button asChild size="lg">
+        <Button asChild size="lg" className='cursor-pointer'>
           <Link href="/">返回首页</Link>
         </Button>
       </div>
@@ -169,12 +169,12 @@ export default async function LinkDetailsPage({
         <LinkDetailsHeader link={link} shortUrl={shortUrl} />
 
         <div className="flex items-center justify-end gap-2">
-          <Button asChild variant="outline" className="h-9">
+          <Button asChild variant="outline" className="h-9 cursor-pointer">
             <Link href={`/analytics?dateType=30d&region=country&device=device&linkId=${id}`}>
               在统计中心打开
             </Link>
           </Button>
-          <Button asChild variant="outline" className="h-9">
+          <Button asChild variant="outline" className="h-9 cursor-pointer">
             <Link href={`/links/${id}/visits?range=${rangeDays}`}>
               查看访问明细
             </Link>
@@ -240,7 +240,7 @@ export default async function LinkDetailsPage({
                       asChild
                       size="sm"
                       variant={d === rangeDays ? 'default' : 'outline'}
-                      className="h-8"
+                      className="h-8 cursor-pointer"
                     >
                       <Link href={`/links/${id}?range=${d}`}>
                         {d} 天

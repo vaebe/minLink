@@ -61,7 +61,7 @@ export function AnalyticsHeader(props: AnalyticsHeaderProps) {
               asChild
               variant="ghost"
               size="sm"
-              className={`rounded-lg h-8 px-4 font-medium transition-all 
+              className={`rounded-lg h-8 px-4 font-medium transition-all cursor-pointer
                 ${t === dateType ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`
               }
             >

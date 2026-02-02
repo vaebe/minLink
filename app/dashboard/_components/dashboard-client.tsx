@@ -87,7 +87,7 @@ export function DashboardClient({ links }: { links: LinkItem[] }) {
         description="管理您的短链，查看实时数据分析。"
         gradient
       >
-        <Button asChild variant="outline" className="h-10">
+        <Button asChild variant="outline" className="h-10 cursor-pointer">
           <Link href="/analytics">
             <BarChart3 className="mr-2 h-4 w-4" />
             统计中心
