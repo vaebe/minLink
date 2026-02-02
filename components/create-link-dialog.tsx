@@ -24,26 +24,18 @@ export function CreateLinkDialog() {
   const [loading, setLoading] = useState(false)
   const [isPublic, setIsPublic] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
     const formData = new FormData(e.currentTarget)
-    
-    // Manually append the switch value if it's not handled by the form data automatically
-    // The Switch component usually doesn't emit a value if not inside a form control or if it's controlled.
-    // We'll trust the formData or handle it via a hidden input if needed.
-    // For now, let's manually append it just in case or ensure the name is passed correctly.
-    // Actually, shadcn switch needs a hidden input to work with native forms easily if not using react-hook-form.
-    // Or we can just append it.
-    
-    if (isPublic) {
-        formData.set('isPublic', 'on')
-    } else {
-        formData.delete('isPublic')
-    }
 
-    const res = await createLink(formData)
-    
+    const res = await createLink({
+      url: formData.get('url') as string,
+      description: formData.get('description') as string | undefined,
+      isPublic,
+      expiresAt: formData.get('expiresAt') as string | null,
+    })
+
     setLoading(false)
     if (res?.error) {
       toast.error(res.error)
@@ -60,7 +52,7 @@ export function CreateLinkDialog() {
           <Plus className="mr-2 h-4 w-4" /> 创建短链
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] overflow-hidden">
+      <DialogContent className="sm:max-w-106.25 overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-primary/50 to-primary" />
         <DialogHeader>
           <DialogTitle className="text-xl flex items-center gap-2">
@@ -135,10 +127,6 @@ export function CreateLinkDialog() {
                 checked={isPublic}
                 onCheckedChange={setIsPublic}
               />
-              {/* Hidden input to ensure form submission includes this value if needed, 
-                  though we manually handle it in handleSubmit now. 
-                  But native form submission might miss it if we didn't intercept.
-               */}
             </div>
           </div>
           
@@ -146,7 +134,7 @@ export function CreateLinkDialog() {
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               取消
             </Button>
-            <Button type="submit" disabled={loading} className="min-w-[80px]">
+            <Button type="submit" disabled={loading} className="min-w-20">
               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               创建
             </Button>

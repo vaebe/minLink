@@ -6,14 +6,16 @@ import { nanoid } from 'nanoid'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 
-const createLinkSchema = z.object({
+const linkSchema = z.object({
   url: z.url({ message: '请输入有效的 URL' }),
   description: z.string().optional(),
   isPublic: z.boolean().default(false),
   expiresAt: z.string().optional().nullable(),
 })
 
-export async function createLink(formData: FormData) {
+export type LinkInput = z.infer<typeof linkSchema>
+
+export async function createLink(data: LinkInput) {
   const supabase = await createClient()
   const {
     data: { user },
@@ -24,13 +26,13 @@ export async function createLink(formData: FormData) {
   }
 
   const rawData = {
-    url: formData.get('url'),
-    description: formData.get('description'),
-    isPublic: formData.get('isPublic') === 'on',
-    expiresAt: formData.get('expiresAt') || null,
+    url: data.url,
+    description: data.description,
+    isPublic: data.isPublic ?? false,
+    expiresAt: data.expiresAt || null,
   }
 
-  const validatedFields = createLinkSchema.safeParse(rawData)
+  const validatedFields = linkSchema.safeParse(rawData)
 
   if (!validatedFields.success) {
     return { error: validatedFields.error.flatten().fieldErrors.url?.[0] || 'Invalid data' }
@@ -71,14 +73,7 @@ export async function createLink(formData: FormData) {
   return { error: lastError?.message || '生成短链失败，请稍后重试' }
 }
 
-const updateLinkSchema = z.object({
-  url: z.url({ message: '请输入有效的 URL' }),
-  description: z.string().optional(),
-  isPublic: z.boolean().default(false),
-  expiresAt: z.string().optional().nullable(),
-})
-
-export async function updateLink(linkId: string, formData: FormData) {
+export async function updateLink(linkId: string, data: LinkInput) {
   const supabase = await createClient()
   const {
     data: { user },
@@ -89,13 +84,13 @@ export async function updateLink(linkId: string, formData: FormData) {
   }
 
   const rawData = {
-    url: formData.get('url'),
-    description: formData.get('description'),
-    isPublic: formData.get('isPublic') === 'on',
-    expiresAt: formData.get('expiresAt') || null,
+    url: data.url,
+    description: data.description,
+    isPublic: data.isPublic,
+    expiresAt: data.expiresAt || null,
   }
 
-  const validatedFields = updateLinkSchema.safeParse(rawData)
+  const validatedFields = linkSchema.safeParse(rawData)
 
   if (!validatedFields.success) {
     return { error: validatedFields.error.flatten().fieldErrors.url?.[0] || 'Invalid data' }

@@ -44,11 +44,10 @@ export function HeroForm({ isAuthenticated }: HeroFormProps) {
     }
 
     setLoading(true)
-    const formData = new FormData()
-    formData.append('url', url)
-
-    // 默认创建私有链接
-    const res = await createLink(formData)
+    const res = await createLink({
+      url,
+      isPublic: false,
+    })
 
     setLoading(false)
     if (res?.error) {
