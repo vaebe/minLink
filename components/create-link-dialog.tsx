@@ -15,14 +15,25 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { Calendar as CalendarComponent } from '@/components/ui/calendar'
 import { createLink } from '@/app/actions'
 import { toast } from 'sonner'
-import { Plus, Loader2, Link2, FileText, Calendar, Globe, Lock } from 'lucide-react'
+import { Plus, Loader2, Link2, FileText, Calendar as CalendarIcon, Globe, Lock } from 'lucide-react'
+import { format } from 'date-fns'
+import { zhCN } from 'date-fns/locale'
+import { cn } from '@/lib/utils'
 
 export function CreateLinkDialog() {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [isPublic, setIsPublic] = useState(false)
+  const [expiresAt, setExpiresAt] = useState<Date | undefined>(undefined)
+  const [calendarOpen, setCalendarOpen] = useState(false)
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -33,7 +44,7 @@ export function CreateLinkDialog() {
       url: formData.get('url') as string,
       description: formData.get('description') as string | undefined,
       isPublic,
-      expiresAt: formData.get('expiresAt') as string | null,
+      expiresAt: expiresAt ? expiresAt.toISOString() : null,
     })
 
     setLoading(false)
@@ -42,6 +53,7 @@ export function CreateLinkDialog() {
     } else {
       toast.success('短链创建成功')
       setOpen(false)
+      setExpiresAt(undefined)
     }
   }
 
@@ -97,19 +109,65 @@ export function CreateLinkDialog() {
               </div>
             </div>
             
-             <div className="space-y-2">
+            <div className="space-y-2">
               <Label htmlFor="expiresAt" className="text-sm font-medium flex items-center gap-2">
                 有效期 (可选)
               </Label>
-              <div className="relative">
-                <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="expiresAt"
-                  name="expiresAt"
-                  type="datetime-local"
-                  className="pl-9 bg-muted/30 focus:bg-background transition-colors"
-                />
-              </div>
+              <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal bg-muted/30 hover:bg-background transition-colors",
+                      !expiresAt && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {expiresAt ? format(expiresAt, "yyyy年M月d日 HH:mm", { locale: zhCN }) : "选择日期和时间"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-4" align="start">
+                  <div className="space-y-3">
+                    <CalendarComponent
+                      mode="single"
+                      selected={expiresAt}
+                      onSelect={(date) => {
+                        if (date) {
+                          setExpiresAt(new Date(
+                            date.getFullYear(),
+                            date.getMonth(),
+                            date.getDate(),
+                            expiresAt?.getHours() ?? 23,
+                            expiresAt?.getMinutes() ?? 59
+                          ))
+                        }
+                      }}
+                      disabled={(date) => date < new Date()}
+                      initialFocus
+                    />
+                    <div className="space-y-2">
+                      <Label className="text-sm">选择时间</Label>
+                      <Input
+                        type="time"
+                        value={expiresAt ? `${String(expiresAt.getHours()).padStart(2, '0')}:${String(expiresAt.getMinutes()).padStart(2, '0')}` : ''}
+                        onChange={(e) => {
+                          if (e.target.value && expiresAt) {
+                            const [hours, minutes] = e.target.value.split(':').map(Number)
+                            setExpiresAt(new Date(
+                              expiresAt.getFullYear(),
+                              expiresAt.getMonth(),
+                              expiresAt.getDate(),
+                              hours,
+                              minutes
+                            ))
+                          }
+                        }}
+                        className="bg-muted/30 focus:bg-background transition-colors"
+                      />
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
             
             <div className="flex items-center justify-between p-3 rounded-lg border bg-muted/20">
