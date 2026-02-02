@@ -53,7 +53,6 @@ export function CreateLinkDialog() {
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-106.25 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-primary/50 to-primary" />
         <DialogHeader>
           <DialogTitle className="text-xl flex items-center gap-2">
             <Link2 className="w-5 h-5 text-primary" />
