@@ -49,10 +49,11 @@ export function CreateLinkDialog() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
-          <Plus className="mr-2 h-4 w-4" /> 创建短链
+          <Plus className="h-4 w-4" /> 
+          <span className='ml-2'>创建短链</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-106.25 overflow-hidden">
+      <DialogContent className="sm:max-w-160 overflow-hidden">
         <DialogHeader>
           <DialogTitle className="text-xl flex items-center gap-2">
             <Link2 className="w-5 h-5 text-primary" />
@@ -73,7 +74,7 @@ export function CreateLinkDialog() {
                 <Input
                   id="url"
                   name="url"
-                  placeholder="https://example.com/very/long/url..."
+                  placeholder="https://example.com/url"
                   required
                   type="url"
                   className="pl-9 bg-muted/30 focus:bg-background transition-colors"
