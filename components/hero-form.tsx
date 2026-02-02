@@ -28,7 +28,7 @@ export function HeroForm({ isAuthenticated }: HeroFormProps) {
     if (error) toast.error(error.message)
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault()
     if (!url) return
 
@@ -64,15 +64,15 @@ export function HeroForm({ isAuthenticated }: HeroFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-xl mx-auto relative group">
+    <form onSubmit={handleSubmit} className="w-full max-w-xl mx-auto group">
       <div
         className={`
-            relative flex items-center p-1 rounded-full transition-all duration-300 ease-out
+            flex items-center p-1 px-4 rounded-full transition-all duration-300 ease-out
             ${focused ? 'ring-4 ring-orange-300 bg-background shadow-xl scale-[1.02]' : 'bg-secondary/50 shadow-sm hover:shadow-md'}
           `}
       >
-        <div className={`absolute left-5 transition-colors duration-300 ${focused ? 'text-orange-300' : 'text-muted-foreground'}`}>
-          <Link2 className="w-5 h-5" />
+        <div className={`transition-colors duration-300 ${focused ? 'text-orange-300' : 'text-muted-foreground'}`}>
+          <Link2 className="w-6 h-6" />
         </div>
         <Input
           type="url"
@@ -81,15 +81,14 @@ export function HeroForm({ isAuthenticated }: HeroFormProps) {
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           placeholder="粘贴长链接，即刻简化"
-          className="h-16 pl-14 pr-36 rounded-full border-none bg-transparent text-lg shadow-none focus-visible:ring-0 placeholder:text-muted-foreground/60"
+          className="h-14 rounded-full border-none bg-transparent text-lg shadow-none focus-visible:ring-0 placeholder:text-muted-foreground/60"
           required
         />
-        <div className="absolute right-2">
-          <Button
+         <Button
             size="lg"
             type="submit"
             disabled={loading}
-            className="rounded-full h-12 px-8 font-medium shadow-sm transition-all text-white"
+            className="rounded-full"
           >
             {loading ? (
               <Loader2 className="w-5 h-5 animate-spin" />
@@ -97,7 +96,6 @@ export function HeroForm({ isAuthenticated }: HeroFormProps) {
               <span className="text-base tracking-wide">生成</span>
             )}
           </Button>
-        </div>
       </div>
     </form>
   )
