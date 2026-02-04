@@ -1,6 +1,6 @@
 import { createClient } from '@/utils/supabase/server'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { VisitsChartSection } from '@/components/visits-chart-section'
+import { VisitsChartSection } from '@/components/visits-chart'
 import { MapPinned, Monitor } from 'lucide-react'
 import { AnalyticsHeader } from '@/app/analytics/_components/analytics-header'
 import { TopListCard } from '@/app/analytics/_components/top-list-card'

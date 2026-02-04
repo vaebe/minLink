@@ -41,7 +41,7 @@ export function LinkDetailsHeader({ link, shortUrl }: LinkDetailsHeaderProps) {
       <Link href="/dashboard" className="text-muted-foreground hover:text-foreground flex items-center text-sm w-fit transition-colors">
         <ArrowLeft className="mr-1 h-4 w-4" /> 返回控制台
       </Link>
-      
+
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-3">

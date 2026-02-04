@@ -8,9 +8,9 @@ import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { copyToClipboard } from '@/lib/clipboard/utils'
-import { LinkCardActions } from './link-card-actions'
-import { LinkCardQRCode } from './link-card-qrcode'
-import { LinkCardDeleteDialog } from './link-card-delete-dialog'
+import { LinkCardActions } from './actions'
+import { LinkCardQRCode } from './qrcode'
+import { LinkCardDeleteDialog } from './delete-dialog'
 
 interface LinkItem {
   id: string
