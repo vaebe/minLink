@@ -3,14 +3,15 @@
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, Globe, Lock, Copy, QrCode, Download, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
-import { toast } from 'sonner'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from '@/components/ui/popover'
 import { QRCodeCanvas } from 'qrcode.react'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
+import { copyToClipboard } from '@/lib/clipboard/utils'
+import { downloadQRCode } from '@/lib/qrcode/utils'
 
 interface LinkDetailsHeaderProps {
   link: {
@@ -24,25 +25,15 @@ interface LinkDetailsHeaderProps {
 }
 
 export function LinkDetailsHeader({ link, shortUrl }: LinkDetailsHeaderProps) {
+  const [isQrOpen, setIsQrOpen] = useState(false)
   const qrRef = useRef<HTMLDivElement>(null)
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(shortUrl)
-    toast.success('链接已复制到剪贴板')
+  const handleCopy = () => {
+    copyToClipboard(shortUrl, '链接已复制到剪贴板')
   }
 
-  const downloadQRCode = () => {
-    const canvas = qrRef.current?.querySelector('canvas')
-    if (canvas) {
-      const url = canvas.toDataURL('image/png')
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `qrcode-${link.short_code}.png`
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      toast.success('二维码已下载')
-    }
+  const handleDownload = () => {
+    downloadQRCode(qrRef, `qrcode-${link.short_code}`)
   }
 
   return (
@@ -77,12 +68,12 @@ export function LinkDetailsHeader({ link, shortUrl }: LinkDetailsHeaderProps) {
         </div>
 
         <div className="flex items-center gap-2">
-           <Button variant="outline" size="sm" className="h-9" onClick={copyToClipboard}>
-             <Copy className="mr-2 h-4 w-4" />
-             复制链接
-           </Button>
-           
-           <Popover>
+          <Button variant="outline" size="sm" className="h-9" onClick={handleCopy}>
+            <Copy className="mr-2 h-4 w-4" />
+            复制链接
+          </Button>
+
+          <Popover open={isQrOpen} onOpenChange={setIsQrOpen}>
             <PopoverTrigger asChild>
               <Button variant="outline" size="sm" className="h-9">
                 <QrCode className="mr-2 h-4 w-4" />
@@ -92,22 +83,29 @@ export function LinkDetailsHeader({ link, shortUrl }: LinkDetailsHeaderProps) {
             <PopoverContent className="w-auto p-4" align="end">
               <div className="flex flex-col items-center gap-3" ref={qrRef}>
                 <div className="p-2 bg-white rounded-lg shadow-sm border">
-                  <QRCodeCanvas 
-                    value={shortUrl} 
-                    size={180}
-                    level="H"
-                    includeMargin
-                    imageSettings={{
-                      src: "/favicon.ico",
-                      x: undefined,
-                      y: undefined,
-                      height: 24,
-                      width: 24,
-                      excavate: true,
-                    }}
-                  />
+                  {isQrOpen ? (
+                    <QRCodeCanvas
+                      value={shortUrl}
+                      size={180}
+                      level="H"
+                      includeMargin
+                      imageSettings={{
+                        src: '/favicon.ico',
+                        x: undefined,
+                        y: undefined,
+                        height: 24,
+                        width: 24,
+                        excavate: true,
+                      }}
+                    />
+                  ) : null}
                 </div>
-                <Button size="sm" variant="outline" className="w-full text-xs" onClick={downloadQRCode}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="w-full text-xs"
+                  onClick={handleDownload}
+                >
                   <Download className="w-3 h-3 mr-2" />
                   下载二维码
                 </Button>

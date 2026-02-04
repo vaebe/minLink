@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { buildAnalyticsUrl } from '@/lib/analytics/utils'
+import { formatDeviceName, formatRegionName } from '@/lib/analytics/formatters'
 import type { DateType, DeviceDim, RegionDim, AnalyticsTopRow } from '@/lib/analytics/types'
 
 type Tab = {
@@ -39,40 +40,22 @@ export function TopListCard({
   const maxValue = Math.max(0, ...items.map((x) => x.clicks))
 
   const formatName = (name: string) => {
-    const raw = (name || '').trim()
-    if (!raw || raw === 'unknown') return paramName === 'region' ? '未知' : 'Unknown'
+    if (paramName === 'region') {
+      return formatRegionName(name)
+    }
 
-    if (paramName !== 'device') return raw
-
+    // Device dimension formatting
     if (activeKey === 'device') {
-      const map: Record<string, string> = { mobile: 'Mobile', desktop: 'Desktop', bot: 'Bot', unknown: 'Unknown', other: 'Other' }
-      return map[raw] || raw
+      return formatDeviceName(name, 'device')
     }
     if (activeKey === 'browser') {
-      const map: Record<string, string> = {
-        chrome: 'Chrome',
-        safari: 'Safari',
-        firefox: 'Firefox',
-        edge: 'Edge',
-        opera: 'Opera',
-        other: 'Other',
-        unknown: 'Unknown',
-      }
-      return map[raw] || raw
+      return formatDeviceName(name, 'browser')
     }
     if (activeKey === 'os') {
-      const map: Record<string, string> = {
-        windows: 'Windows',
-        macos: 'macOS',
-        ios: 'iOS',
-        android: 'Android',
-        linux: 'Linux',
-        other: 'Other',
-        unknown: 'Unknown',
-      }
-      return map[raw] || raw
+      return formatDeviceName(name, 'os')
     }
-    return raw
+
+    return name
   }
 
   const buildUrl = (key: string) => {
@@ -98,23 +81,17 @@ export function TopListCard({
             </div>
           </div>
 
-          <div className="flex bg-muted/50 p-1 rounded-lg w-full">
-            {tabs.map((x) => (
-              <Button
-                key={x.key}
-                asChild
-                variant="ghost"
-                size="sm"
-                className={`w-full h-7 text-xs font-medium rounded-md transition-all flex-1 cursor-pointer
-                  ${x.key === activeKey ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`
-                }
-              >
-                <Link href={buildUrl(x.key)}>
-                  {x.label}
-                </Link>
-              </Button>
-            ))}
-          </div>
+          <Tabs value={activeKey} className="w-full">
+            <TabsList className="grid w-full" style={{ gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))` }}>
+              {tabs.map((x) => (
+                <TabsTrigger key={x.key} value={x.key} asChild>
+                  <Link href={buildUrl(x.key)}>
+                    {x.label}
+                  </Link>
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
         </div>
       </CardHeader>
       <CardContent className="px-2 pb-4 flex-1 overflow-auto">

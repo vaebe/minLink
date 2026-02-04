@@ -36,15 +36,14 @@ export function DashboardClient({ links }: { links: LinkItem[] }) {
 
   const normalizedQuery = useMemo(() => deferredQuery.trim().toLowerCase(), [deferredQuery])
 
-  const stats = useMemo(() => {
-    let totalVisits = 0
-    let publicLinks = 0
-    for (const link of links) {
-      totalVisits += link.visits_count
-      if (link.is_public) publicLinks += 1
-    }
-    return { totalLinks: links.length, totalVisits, publicLinks }
-  }, [links])
+  const stats = useMemo(
+    () => ({
+      totalLinks: links.length,
+      totalVisits: links.reduce((sum, link) => sum + link.visits_count, 0),
+      publicLinks: links.filter((link) => link.is_public).length,
+    }),
+    [links]
+  )
 
   const filteredLinks = useMemo(() => {
     return links.filter((link) => {
