@@ -1,14 +1,14 @@
-
 import { createClient } from '@/utils/supabase/server'
 import { notFound } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Clock, MapPin, Lock, Users, Compass, Monitor } from 'lucide-react'
+import { Clock, MapPin, Lock, Users } from 'lucide-react'
 import Link from 'next/link'
-import { LinkDetailsHeader } from '@/components/link-details-header'
-import { VisitsChartSection } from '@/components/visits-chart-section'
+import { LinkDetailsHeader, StatsCard, LinkDetailsCard } from '@/components/link-details'
+import { VisitsChartSection } from '@/components/visits-chart'
 import type { AnalyticsTimeRow, AnalyticsTopRow } from '@/lib/analytics/types'
 import { getDateWindow } from '@/lib/analytics/utils'
+import { normalizeLabel } from '@/lib/analytics/formatters'
 
 export default async function LinkDetailsPage({
   params,
@@ -50,7 +50,7 @@ export default async function LinkDetailsPage({
             该短链是私有的，只有创建者可以查看详情。
           </p>
         </div>
-        <Button asChild size="lg">
+        <Button asChild size="lg" className='cursor-pointer'>
           <Link href="/">返回首页</Link>
         </Button>
       </div>
@@ -150,18 +150,29 @@ export default async function LinkDetailsPage({
   })
 
   const chartData = safeTime
-
   const rangePv = safeTime.reduce((acc, row) => acc + row.pv, 0)
   const rangeUv = new Set((ipRes.data || []).map((x) => x.ip).filter(Boolean).map((ip) => String(ip))).size
   const lastVisit =
-    lastVisitRes.data && lastVisitRes.data.length > 0 ? new Date(lastVisitRes.data[0].created_at).toLocaleString('zh-CN') : '暂无'
+    lastVisitRes.data && lastVisitRes.data.length > 0
+      ? new Date(lastVisitRes.data[0].created_at).toLocaleString('zh-CN')
+      : '暂无'
 
-  const normalizeLabel = (value: string) => (value === 'unknown' ? '未知' : value)
-
-  const topCountries = ((countryRes.data || []) as AnalyticsTopRow[]).map((x) => [normalizeLabel(x.name), Number(x.clicks)] as const)
-  const topCities = ((cityRes.data || []) as AnalyticsTopRow[]).map((x) => [normalizeLabel(x.name), Number(x.clicks)] as const)
-  const topReferrers = ((referrerRes.data || []) as AnalyticsTopRow[]).map((x) => [normalizeLabel(x.name), Number(x.clicks)] as const)
-  const topDevices = ((deviceRes.data || []) as AnalyticsTopRow[]).map((x) => [normalizeLabel(x.name), Number(x.clicks)] as const)
+  const topCountries: Array<[string, number]> = ((countryRes.data || []) as AnalyticsTopRow[]).map((x) => [
+    normalizeLabel(x.name),
+    Number(x.clicks),
+  ])
+  const topCities: Array<[string, number]> = ((cityRes.data || []) as AnalyticsTopRow[]).map((x) => [
+    normalizeLabel(x.name),
+    Number(x.clicks),
+  ])
+  const topReferrers: Array<[string, number]> = ((referrerRes.data || []) as AnalyticsTopRow[]).map((x) => [
+    normalizeLabel(x.name),
+    Number(x.clicks),
+  ])
+  const topDevices: Array<[string, number]> = ((deviceRes.data || []) as AnalyticsTopRow[]).map((x) => [
+    normalizeLabel(x.name),
+    Number(x.clicks),
+  ])
 
   return (
     <div className="min-h-screen">
@@ -169,12 +180,12 @@ export default async function LinkDetailsPage({
         <LinkDetailsHeader link={link} shortUrl={shortUrl} />
 
         <div className="flex items-center justify-end gap-2">
-          <Button asChild variant="outline" className="h-9">
+          <Button asChild variant="outline" className="h-9 cursor-pointer">
             <Link href={`/analytics?dateType=30d&region=country&device=device&linkId=${id}`}>
               在统计中心打开
             </Link>
           </Button>
-          <Button asChild variant="outline" className="h-9">
+          <Button asChild variant="outline" className="h-9 cursor-pointer">
             <Link href={`/links/${id}/visits?range=${rangeDays}`}>
               查看访问明细
             </Link>
@@ -182,47 +193,26 @@ export default async function LinkDetailsPage({
         </div>
 
         <div className="grid gap-6 md:grid-cols-3">
-           {/* Stats Cards */}
-           <Card className="bg-card/50 backdrop-blur-sm border-primary/10">
-             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-               <CardTitle className="text-sm font-medium">PV</CardTitle>
-               <MapPin className="h-4 w-4 text-muted-foreground" />
-             </CardHeader>
-             <CardContent>
-               <div className="text-2xl font-bold">{rangePv}</div>
-               <p className="text-xs text-muted-foreground">
-                 过去 {rangeDays} 天
-               </p>
-             </CardContent>
-           </Card>
-           
-           <Card className="bg-card/50 backdrop-blur-sm border-primary/10">
-             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-               <CardTitle className="text-sm font-medium">UV</CardTitle>
-               <Users className="h-4 w-4 text-muted-foreground" />
-             </CardHeader>
-             <CardContent>
-               <div className="text-2xl font-bold">{rangeUv}</div>
-               <p className="text-xs text-muted-foreground">
-                 过去 {rangeDays} 天（按 IP 去重）
-               </p>
-             </CardContent>
-           </Card>
+          <StatsCard
+            title="PV"
+            value={rangePv}
+            description={`过去 ${rangeDays} 天`}
+            icon={MapPin}
+          />
 
-           <Card className="bg-card/50 backdrop-blur-sm border-primary/10">
-             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-               <CardTitle className="text-sm font-medium">最近访问</CardTitle>
-               <Clock className="h-4 w-4 text-muted-foreground" />
-             </CardHeader>
-             <CardContent>
-               <div className="text-2xl font-bold truncate" title={lastVisit}>
-                 {lastVisit}
-               </div>
-               <p className="text-xs text-muted-foreground">
-                 过去 {rangeDays} 天内
-               </p>
-             </CardContent>
-           </Card>
+          <StatsCard
+            title="UV"
+            value={rangeUv}
+            description={`过去 ${rangeDays} 天（按 IP 去重）`}
+            icon={Users}
+          />
+
+          <StatsCard
+            title="最近访问"
+            value={lastVisit}
+            description={`过去 ${rangeDays} 天内`}
+            icon={Clock}
+          />
         </div>
 
         <div className="grid gap-6 md:grid-cols-3">
@@ -240,7 +230,7 @@ export default async function LinkDetailsPage({
                       asChild
                       size="sm"
                       variant={d === rangeDays ? 'default' : 'outline'}
-                      className="h-8"
+                      className="h-8 cursor-pointer"
                     >
                       <Link href={`/links/${id}?range=${d}`}>
                         {d} 天
@@ -255,97 +245,15 @@ export default async function LinkDetailsPage({
             </CardContent>
           </Card>
 
-          <Card className="border-border/60 shadow-sm">
-            <CardHeader>
-              <CardTitle>详情信息</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-               {link.description && (
-                  <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">备注</label>
-                    <p className="text-sm bg-muted/30 p-2 rounded-md">{link.description}</p>
-                  </div>
-              )}
-              
-              <div className="space-y-1">
-                 <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">来源地区（国家 Top 5）</label>
-                 <div className="space-y-2 mt-2">
-                    {topCountries.length > 0 ? (
-                        topCountries.map(([country, count]) => (
-                            <div key={country} className="flex items-center justify-between text-sm">
-                                <span className="flex items-center gap-2">
-                                    <span className="w-2 h-2 rounded-full bg-primary/60"></span>
-                                    {country}
-                                </span>
-                                <span className="font-mono font-medium">{count}</span>
-                            </div>
-                        ))
-                    ) : (
-                        <div className="text-sm text-muted-foreground">暂无地区数据</div>
-                    )}
-                 </div>
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">来源地区（城市 Top 5）</label>
-                <div className="space-y-2 mt-2">
-                  {topCities.length > 0 ? (
-                    topCities.map(([city, count]) => (
-                      <div key={city} className="flex items-center justify-between text-sm">
-                        <span className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-primary/60"></span>
-                          {city}
-                        </span>
-                        <span className="font-mono font-medium">{count}</span>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-sm text-muted-foreground">暂无城市数据</div>
-                  )}
-                </div>
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">来源分析（Top 5）</label>
-                <div className="space-y-2 mt-2">
-                  {topReferrers.length > 0 ? (
-                    topReferrers.map(([ref, count]) => (
-                      <div key={ref} className="flex items-center justify-between text-sm">
-                        <span className="flex items-center gap-2">
-                          <Compass className="h-3.5 w-3.5 text-muted-foreground" />
-                          <span className="truncate max-w-45" title={ref}>
-                            {ref}
-                          </span>
-                        </span>
-                        <span className="font-mono font-medium">{count}</span>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-sm text-muted-foreground">暂无来源数据</div>
-                  )}
-                </div>
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">设备概览</label>
-                <div className="space-y-2 mt-2">
-                  {topDevices.length > 0 ? (
-                    topDevices.map(([device, count]) => (
-                      <div key={device} className="flex items-center justify-between text-sm">
-                        <span className="flex items-center gap-2">
-                          <Monitor className="h-3.5 w-3.5 text-muted-foreground" />
-                          {device}
-                        </span>
-                        <span className="font-mono font-medium">{count}</span>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-sm text-muted-foreground">暂无设备数据</div>
-                  )}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <LinkDetailsCard
+            data={{
+              countries: topCountries,
+              cities: topCities,
+              referrers: topReferrers,
+              devices: topDevices,
+              description: link.description,
+            }}
+          />
         </div>
       </div>
     </div>

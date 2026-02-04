@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic'
 import type { VisitsChartPoint } from '@/lib/analytics/types'
 
 const VisitsChart = dynamic(
-  () => import('@/components/visits-chart').then((mod) => mod.VisitsChart),
+  () => import('./chart').then((mod) => mod.VisitsChart),
   {
     ssr: false,
     loading: () => (

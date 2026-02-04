@@ -36,15 +36,14 @@ export function DashboardClient({ links }: { links: LinkItem[] }) {
 
   const normalizedQuery = useMemo(() => deferredQuery.trim().toLowerCase(), [deferredQuery])
 
-  const stats = useMemo(() => {
-    let totalVisits = 0
-    let publicLinks = 0
-    for (const link of links) {
-      totalVisits += link.visits_count
-      if (link.is_public) publicLinks += 1
-    }
-    return { totalLinks: links.length, totalVisits, publicLinks }
-  }, [links])
+  const stats = useMemo(
+    () => ({
+      totalLinks: links.length,
+      totalVisits: links.reduce((sum, link) => sum + link.visits_count, 0),
+      publicLinks: links.filter((link) => link.is_public).length,
+    }),
+    [links]
+  )
 
   const filteredLinks = useMemo(() => {
     return links.filter((link) => {
@@ -87,7 +86,7 @@ export function DashboardClient({ links }: { links: LinkItem[] }) {
         description="管理您的短链，查看实时数据分析。"
         gradient
       >
-        <Button asChild variant="outline" className="h-10">
+        <Button asChild variant="outline" className="h-10 cursor-pointer">
           <Link href="/analytics">
             <BarChart3 className="mr-2 h-4 w-4" />
             统计中心

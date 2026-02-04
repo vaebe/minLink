@@ -1,12 +1,22 @@
+"use client"
+
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
 import { PageHeader } from '@/components/page-header'
-import { BarChart3, Lock, ChevronDown } from 'lucide-react'
+import { BarChart3, Lock } from 'lucide-react'
 import type { DateType, DeviceDim, RegionDim } from '@/lib/analytics/types'
 import { buildAnalyticsUrl } from '@/lib/analytics/utils'
 import type { User as SupabaseUser } from '@supabase/supabase-js'
 import { Card } from '@/components/ui/card'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { useState } from 'react'
 
 type LinkItem = {
   id: string
@@ -14,15 +24,7 @@ type LinkItem = {
   description: string | null
 }
 
-export function AnalyticsHeader({
-  user,
-  links,
-  dateType,
-  region,
-  device,
-  linkId,
-  scopeLabel,
-}: {
+interface AnalyticsHeaderProps {
   user: SupabaseUser | null
   links: LinkItem[]
   dateType: DateType
@@ -30,7 +32,22 @@ export function AnalyticsHeader({
   device: DeviceDim
   linkId: string
   scopeLabel: string
-}) {
+}
+
+const TimeTypeList: DateType[] = ['24h', '7d', '30d', '90d']
+
+export function AnalyticsHeader(props: AnalyticsHeaderProps) {
+
+  const { user, links, dateType, region, device, linkId, scopeLabel, } = props
+
+  const router = useRouter()
+  const [selectedLinkId, setSelectedLinkId] = useState(linkId || 'all')
+
+  const handleLinkChange = (value: string) => {
+    setSelectedLinkId(value)
+    router.push(buildAnalyticsUrl({ dateType, region, device, linkId: value === 'all' ? '' : value }))
+  }
+
   return (
     <div className="flex flex-col gap-8 pb-2">
       <PageHeader
@@ -38,15 +55,15 @@ export function AnalyticsHeader({
         description="实时监控访问趋势、地理分布与设备来源。"
       >
         <div className="bg-muted/50 p-1 rounded-xl inline-flex self-start md:self-auto backdrop-blur-md border border-border/50">
-          {(['24h', '7d', '30d', '90d'] as const).map((t) => (
+          {TimeTypeList.map((t) => (
             <Button
               key={t}
               asChild
               variant="ghost"
               size="sm"
-              className={`rounded-lg h-8 px-4 font-medium transition-all ${
-                t === dateType ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'
-              }`}
+              className={`rounded-lg h-8 px-4 font-medium transition-all cursor-pointer
+                ${t === dateType ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`
+              }
             >
               <Link href={buildAnalyticsUrl({ dateType: t, region, device, linkId })}>
                 {t === '24h' ? '24小时' : t.replace('d', '天')}
@@ -68,34 +85,19 @@ export function AnalyticsHeader({
         </div>
 
         {user ? (
-          <form action="/analytics" method="get" className="flex items-center gap-3 w-full md:w-auto bg-background/50 rounded-xl p-1.5 border border-border/50">
-            <input type="hidden" name="dateType" value={dateType} />
-            <input type="hidden" name="region" value={region} />
-            <input type="hidden" name="device" value={device} />
-
-            <div className="relative w-full md:w-64 group px-2">
-              <Label htmlFor="analytics-link-select" className="sr-only">
-                选择短链
-              </Label>
-              <select
-                id="analytics-link-select"
-                name="linkId"
-                defaultValue={linkId}
-                className="w-full h-8 appearance-none bg-transparent pr-8 text-sm font-medium outline-none cursor-pointer text-foreground"
-              >
-                <option value="">所有短链数据</option>
-                {links.map((l) => (
-                  <option key={l.id} value={l.id}>
-                    /{l.short_code}{l.description ? ` · ${l.description}` : ''}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none group-hover:text-foreground transition-colors" />
-            </div>
-            <Button type="submit" size="sm" className="rounded-lg h-8 px-4 shadow-none">
-              筛选
-            </Button>
-          </form>
+          <Select value={selectedLinkId} onValueChange={handleLinkChange}>
+            <SelectTrigger className="w-full md:w-64">
+              <SelectValue placeholder="选择短链" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">所有短链数据</SelectItem>
+              {links.map((l) => (
+                <SelectItem key={l.id} value={l.id}>
+                  /{l.short_code}{l.description ? ` · ${l.description}` : ''}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         ) : (
           <p className="text-sm text-muted-foreground pr-2">仅展示公开汇总数据</p>
         )}

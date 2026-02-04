@@ -15,53 +15,57 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { Calendar as CalendarComponent } from '@/components/ui/calendar'
 import { createLink } from '@/app/actions'
 import { toast } from 'sonner'
-import { Plus, Loader2, Link2, FileText, Calendar, Globe, Lock } from 'lucide-react'
+import { Plus, Loader2, Link2, FileText, Calendar as CalendarIcon, Globe, Lock } from 'lucide-react'
+import { format } from 'date-fns'
+import { zhCN } from 'date-fns/locale'
+import { cn } from '@/lib/utils'
 
 export function CreateLinkDialog() {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [isPublic, setIsPublic] = useState(false)
+  const [expiresAt, setExpiresAt] = useState<Date | undefined>(undefined)
+  const [calendarOpen, setCalendarOpen] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
     const formData = new FormData(e.currentTarget)
-    
-    // Manually append the switch value if it's not handled by the form data automatically
-    // The Switch component usually doesn't emit a value if not inside a form control or if it's controlled.
-    // We'll trust the formData or handle it via a hidden input if needed.
-    // For now, let's manually append it just in case or ensure the name is passed correctly.
-    // Actually, shadcn switch needs a hidden input to work with native forms easily if not using react-hook-form.
-    // Or we can just append it.
-    
-    if (isPublic) {
-        formData.set('isPublic', 'on')
-    } else {
-        formData.delete('isPublic')
-    }
 
-    const res = await createLink(formData)
-    
+    const res = await createLink({
+      url: formData.get('url') as string,
+      description: formData.get('description') as string | undefined,
+      isPublic,
+      expiresAt: expiresAt ? expiresAt.toISOString() : null,
+    })
+
     setLoading(false)
     if (res?.error) {
       toast.error(res.error)
     } else {
       toast.success('短链创建成功')
       setOpen(false)
+      setExpiresAt(undefined)
     }
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
-          <Plus className="mr-2 h-4 w-4" /> 创建短链
+        <Button className="shadow-lg cursor-pointer hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+          <Plus className="h-4 w-4" /> 
+          <span className='ml-2'>创建短链</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-primary/50 to-primary" />
+      <DialogContent className="sm:max-w-160 overflow-hidden">
         <DialogHeader>
           <DialogTitle className="text-xl flex items-center gap-2">
             <Link2 className="w-5 h-5 text-primary" />
@@ -82,7 +86,7 @@ export function CreateLinkDialog() {
                 <Input
                   id="url"
                   name="url"
-                  placeholder="https://example.com/very/long/url..."
+                  placeholder="https://example.com/url"
                   required
                   type="url"
                   className="pl-9 bg-muted/30 focus:bg-background transition-colors"
@@ -105,19 +109,65 @@ export function CreateLinkDialog() {
               </div>
             </div>
             
-             <div className="space-y-2">
+            <div className="space-y-2">
               <Label htmlFor="expiresAt" className="text-sm font-medium flex items-center gap-2">
                 有效期 (可选)
               </Label>
-              <div className="relative">
-                <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="expiresAt"
-                  name="expiresAt"
-                  type="datetime-local"
-                  className="pl-9 bg-muted/30 focus:bg-background transition-colors"
-                />
-              </div>
+              <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal bg-muted/30 hover:bg-background transition-colors",
+                      !expiresAt && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {expiresAt ? format(expiresAt, "yyyy年M月d日 HH:mm", { locale: zhCN }) : "选择日期和时间"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-4" align="start">
+                  <div className="space-y-3">
+                    <CalendarComponent
+                      mode="single"
+                      selected={expiresAt}
+                      onSelect={(date) => {
+                        if (date) {
+                          setExpiresAt(new Date(
+                            date.getFullYear(),
+                            date.getMonth(),
+                            date.getDate(),
+                            expiresAt?.getHours() ?? 23,
+                            expiresAt?.getMinutes() ?? 59
+                          ))
+                        }
+                      }}
+                      disabled={(date) => date < new Date()}
+                      initialFocus
+                    />
+                    <div className="space-y-2">
+                      <Label className="text-sm">选择时间</Label>
+                      <Input
+                        type="time"
+                        value={expiresAt ? `${String(expiresAt.getHours()).padStart(2, '0')}:${String(expiresAt.getMinutes()).padStart(2, '0')}` : ''}
+                        onChange={(e) => {
+                          if (e.target.value && expiresAt) {
+                            const [hours, minutes] = e.target.value.split(':').map(Number)
+                            setExpiresAt(new Date(
+                              expiresAt.getFullYear(),
+                              expiresAt.getMonth(),
+                              expiresAt.getDate(),
+                              hours,
+                              minutes
+                            ))
+                          }
+                        }}
+                        className="bg-muted/30 focus:bg-background transition-colors"
+                      />
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
             
             <div className="flex items-center justify-between p-3 rounded-lg border bg-muted/20">
@@ -135,10 +185,6 @@ export function CreateLinkDialog() {
                 checked={isPublic}
                 onCheckedChange={setIsPublic}
               />
-              {/* Hidden input to ensure form submission includes this value if needed, 
-                  though we manually handle it in handleSubmit now. 
-                  But native form submission might miss it if we didn't intercept.
-               */}
             </div>
           </div>
           
@@ -146,7 +192,7 @@ export function CreateLinkDialog() {
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               取消
             </Button>
-            <Button type="submit" disabled={loading} className="min-w-[80px]">
+            <Button type="submit" disabled={loading} className="min-w-20">
               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               创建
             </Button>

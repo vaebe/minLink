@@ -6,14 +6,23 @@ import { nanoid } from 'nanoid'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 
-const createLinkSchema = z.object({
+const linkSchema = z.object({
   url: z.url({ message: '请输入有效的 URL' }),
   description: z.string().optional(),
   isPublic: z.boolean().default(false),
-  expiresAt: z.string().optional().nullable(),
+  expiresAt: z.iso.datetime({ offset: true }).optional().nullable(),
 })
 
-export async function createLink(formData: FormData) {
+const linkIdSchema = z.string({ message: '无效的链接 ID' }).min(1, { message: '链接 ID 不能为空' })
+
+const updateLinkStateSchema = z.object({
+  linkId: z.string({ message: '无效的链接 ID' }).min(1, { message: '链接 ID 不能为空' }),
+  isPublic: z.boolean({ message: '无效的公开状态' }),
+})
+
+export type LinkInput = z.infer<typeof linkSchema>
+
+export async function createLink(data: LinkInput) {
   const supabase = await createClient()
   const {
     data: { user },
@@ -24,16 +33,16 @@ export async function createLink(formData: FormData) {
   }
 
   const rawData = {
-    url: formData.get('url'),
-    description: formData.get('description'),
-    isPublic: formData.get('isPublic') === 'on',
-    expiresAt: formData.get('expiresAt') || null,
+    url: data.url,
+    description: data.description,
+    isPublic: data.isPublic ?? false,
+    expiresAt: data.expiresAt || null,
   }
 
-  const validatedFields = createLinkSchema.safeParse(rawData)
+  const validatedFields = linkSchema.safeParse(rawData)
 
   if (!validatedFields.success) {
-    return { error: validatedFields.error.flatten().fieldErrors.url?.[0] || 'Invalid data' }
+    return { error: validatedFields.error.issues[0].message || 'Invalid data' }
   }
 
   const { url, description, isPublic, expiresAt } = validatedFields.data
@@ -71,14 +80,7 @@ export async function createLink(formData: FormData) {
   return { error: lastError?.message || '生成短链失败，请稍后重试' }
 }
 
-const updateLinkSchema = z.object({
-  url: z.url({ message: '请输入有效的 URL' }),
-  description: z.string().optional(),
-  isPublic: z.boolean().default(false),
-  expiresAt: z.string().optional().nullable(),
-})
-
-export async function updateLink(linkId: string, formData: FormData) {
+export async function updateLink(linkId: string, data: LinkInput) {
   const supabase = await createClient()
   const {
     data: { user },
@@ -89,16 +91,16 @@ export async function updateLink(linkId: string, formData: FormData) {
   }
 
   const rawData = {
-    url: formData.get('url'),
-    description: formData.get('description'),
-    isPublic: formData.get('isPublic') === 'on',
-    expiresAt: formData.get('expiresAt') || null,
+    url: data.url,
+    description: data.description,
+    isPublic: data.isPublic,
+    expiresAt: data.expiresAt || null,
   }
 
-  const validatedFields = updateLinkSchema.safeParse(rawData)
+  const validatedFields = linkSchema.safeParse(rawData)
 
   if (!validatedFields.success) {
-    return { error: validatedFields.error.flatten().fieldErrors.url?.[0] || 'Invalid data' }
+    return { error: validatedFields.error.issues[0].message || 'Invalid data' }
   }
 
   const { url, description, isPublic, expiresAt } = validatedFields.data
@@ -123,6 +125,13 @@ export async function updateLink(linkId: string, formData: FormData) {
 }
 
 export async function deleteLink(linkId: string) {
+  // Validate linkId
+  const validatedLinkId = linkIdSchema.safeParse(linkId)
+
+  if (!validatedLinkId.success) {
+    return { error: validatedLinkId.error.issues[0].message || '无效的链接 ID' }
+  }
+
   const supabase = await createClient()
   const {
     data: { user },
@@ -135,7 +144,7 @@ export async function deleteLink(linkId: string) {
   const { error } = await supabase
     .from('links')
     .delete()
-    .eq('id', linkId)
+    .eq('id', validatedLinkId.data)
     .eq('user_id', user.id)
 
   if (error) {
@@ -147,25 +156,32 @@ export async function deleteLink(linkId: string) {
 }
 
 export async function updateLinkState(linkId: string, isPublic: boolean) {
-    const supabase = await createClient()
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-  
-    if (!user) {
-      return { error: '请先登录' }
-    }
-  
-    const { error } = await supabase
-      .from('links')
-      .update({ is_public: isPublic })
-      .eq('id', linkId)
-      .eq('user_id', user.id)
-  
-    if (error) {
-      return { error: error.message }
-    }
-  
-    revalidatePath('/dashboard')
-    return { success: true }
+  // Validate input
+  const validatedFields = updateLinkStateSchema.safeParse({ linkId, isPublic })
+
+  if (!validatedFields.success) {
+    return { error: validatedFields.error.issues[0].message || '无效的输入参数' }
   }
+
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    return { error: '请先登录' }
+  }
+
+  const { error } = await supabase
+    .from('links')
+    .update({ is_public: validatedFields.data.isPublic })
+    .eq('id', validatedFields.data.linkId)
+    .eq('user_id', user.id)
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  revalidatePath('/dashboard')
+  return { success: true }
+}
