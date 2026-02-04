@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Copy, BarChart2 } from 'lucide-react'
+import { Copy, BarChart2, Lock, ExternalLink, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { deleteLink, updateLinkState } from '@/app/actions'
 import { useMemo, useState } from 'react'
@@ -81,29 +81,23 @@ export function LinkCard({ link, readOnly = false }: { link: LinkItem, readOnly?
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-2">
             <div
-              className="flex items-center gap-1.5 group/link cursor-pointer"
+              className="flex items-center gap-1.5 cursor-pointer text-foreground hover:text-orange-300 transition-colors"
               onClick={handleCopy}
             >
-              <span className="font-bold text-2xl tracking-tight text-foreground group-hover/link:text-orange-300 transition-colors">
+              <span className="font-bold text-2xl tracking-tight">
                 /{link.short_code}
               </span>
-              <Copy className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover/link:opacity-100 transition-opacity" />
+              <Copy className="w-4 h-4" />
             </div>
-            {link.is_public && (
-              <div
-                className="w-1.5 h-1.5 rounded-full bg-green-500 mb-3 ml-0.5"
-                title="公开"
-              />
-            )}
+
+            {!link.is_public && <Lock className="w-4 h-4 text-orange-500"></Lock>}
           </div>
 
           {!readOnly && (
             <div className="flex items-center -mr-2">
               <LinkCardActions
                 isPublic={link.is_public}
-                shortUrl={shortUrl}
                 onTogglePublic={handleTogglePublic}
-                onDelete={() => setDeleteOpen(true)}
               />
             </div>
           )}
@@ -117,11 +111,10 @@ export function LinkCard({ link, readOnly = false }: { link: LinkItem, readOnly?
           >
             {link.original_url}
           </p>
-          {link.description && (
-            <p className="text-sm text-foreground/80 pl-1 line-clamp-1">
-              {link.description}
-            </p>
-          )}
+
+          <p className="text-sm text-foreground/80 min-h-5 pl-1 line-clamp-1">
+            {link.description}
+          </p>
         </div>
 
         {/* Bottom: Stats & Quick Actions */}
@@ -138,6 +131,18 @@ export function LinkCard({ link, readOnly = false }: { link: LinkItem, readOnly?
           </div>
 
           <div className="flex items-center gap-1">
+            <Button
+              asChild
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-secondary"
+              onClick={() => window.open(shortUrl, '_blank')}
+            >
+              <Link href={shortUrl} target='_blank'>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </Link>
+            </Button>
+
             <LinkCardQRCode shortUrl={shortUrl} shortCode={link.short_code} />
 
             <Button
@@ -149,6 +154,17 @@ export function LinkCard({ link, readOnly = false }: { link: LinkItem, readOnly?
               <Link href={`/links/${link.id}`}>
                 <BarChart2 className="w-3.5 h-3.5" />
               </Link>
+            </Button>
+            <Button
+              asChild
+              variant="ghost"
+              size="icon"
+              className="cursor-pointer h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-secondary"
+              onClick={() => setDeleteOpen(true)}
+            >
+              <div>
+                <Trash2 className="w-3.5 h-3.5" />
+              </div>
             </Button>
           </div>
         </div>
