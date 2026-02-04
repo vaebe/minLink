@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 import { deleteLink, updateLinkState } from '@/app/actions'
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { copyToClipboard } from '@/lib/clipboard/utils'
 import { LinkCardActions } from './actions'
@@ -23,6 +24,7 @@ interface LinkItem {
 }
 
 export function LinkCard({ link, readOnly = false }: { link: LinkItem, readOnly?: boolean }) {
+  const router = useRouter()
   const [isDeleting, setIsDeleting] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
 
@@ -50,6 +52,7 @@ export function LinkCard({ link, readOnly = false }: { link: LinkItem, readOnly?
     } else {
       setDeleteOpen(false)
       toast.success('短链已删除')
+      router.refresh()
     }
   }
 
@@ -61,6 +64,7 @@ export function LinkCard({ link, readOnly = false }: { link: LinkItem, readOnly?
       toast.error(res.error)
     } else {
       toast.success(newState ? '已设置为公开' : '已设置为私有')
+      router.refresh()
     }
   }
 
