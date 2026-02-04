@@ -10,7 +10,7 @@ const linkSchema = z.object({
   url: z.url({ message: '请输入有效的 URL' }),
   description: z.string().optional(),
   isPublic: z.boolean().default(false),
-  expiresAt: z.string().optional().nullable(),
+  expiresAt: z.iso.datetime({ offset: true }).optional().nullable(),
 })
 
 const linkIdSchema = z.string({ message: '无效的链接 ID' }).min(1, { message: '链接 ID 不能为空' })
